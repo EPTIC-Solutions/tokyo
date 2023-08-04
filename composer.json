@@ -1,0 +1,28 @@
+{
+  "name": "eptic/tokyo",
+  "description": "Local php development for linux artisans.",
+  "type": "library",
+  "license": "GNU GPLv3",
+  "require": {
+    "mnapoli/silly": "^1.8",
+    "php": ">=8.1",
+    "illuminate/container": "^10.0",
+    "illuminate/collections": "^10.0",
+    "illuminate/process": "^10.0",
+    "symfony/var-dumper": "^6.3",
+    "symfony/event-dispatcher": "^6.3"
+  },
+  "autoload": {
+    "psr-4": {
+      "Tokyo\\": "src/Tokyo"
+    },
+    "files": [
+      "src/includes/helpers.php"
+    ]
+  },
+  "authors": [
+    {
+      "name": "Cristian Bilu"
+    }
+  ]
+}
