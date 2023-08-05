@@ -10,7 +10,7 @@ use Tokyo\Tokyo;
 
 $app = new Application(config('app.name'), config('app.version'));
 
-Tokyo::setup();
+resolve(Tokyo::class)->setup();
 
 if (!isInstalled()) {
     $app->command('install', function (CommandLine $cli, Configuration $conf, PackageManager $pm, ServiceManager $sm) {

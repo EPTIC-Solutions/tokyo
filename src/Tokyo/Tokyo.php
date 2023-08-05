@@ -3,12 +3,9 @@
 namespace Tokyo;
 
 use DI\Container;
-use DomainException;
 use Tokyo\Contracts\PackageManager;
 use Tokyo\Contracts\ServiceManager;
 use Tokyo\PackageManagers\Apt;
-use Tokyo\PackageManagers\Brew;
-use Tokyo\ServiceManagers\Brew as ServiceManagersBrew;
 use Tokyo\ServiceManagers\LinuxService;
 use Tokyo\ServiceManagers\Systemd;
 
@@ -16,13 +13,22 @@ class Tokyo
 {
     static public Container $container;
 
-    static public function setup()
+    public function __construct(private readonly System $system)
     {
-        self::setupPackageMangers();
-        self::setupServiceManagers();
+        //
     }
 
-    static private function setupPackageMangers()
+    public function setup(): void
+    {
+        if (false === $this->system->isSupportedOperatingSystem()) {
+            error("Tokyo is not supported on this operating system.");
+            exit(1);
+        }
+
+        $this->setupManagers();
+    }
+
+    private function setupManagers(): void
     {
         container()->set(PackageManager::class, self::getAvailablePackageManager());
         container()->set(ServiceManager::class, self::getAvailableServiceManager());
@@ -31,7 +37,7 @@ class Tokyo
     /**
      * Determine the first available package manager
      */
-    static private function getAvailablePackageManager(): PackageManager
+    private function getAvailablePackageManager(): PackageManager
     {
         return collect([
             // Brew::class,
@@ -41,7 +47,8 @@ class Tokyo
             ->first(static function (PackageManager $pm) {
                 return $pm->isAvailable();
             }, static function () {
-                throw new DomainException("Could not find compatible package manager.");
+                error('Could not find compatible package manager.');
+                exit(1);
             });
     }
 
@@ -59,12 +66,9 @@ class Tokyo
             ->first(static function (ServiceManager $sm) {
                 return $sm->isAvailable();
             }, static function () {
-                throw new DomainException("Could not find compatible service manager.");
+                error('Could not find compatible service manager.');
+                exit(1);
             });
-    }
-
-    static private function setupServiceManagers()
-    {
     }
 
     static public function setContainer(Container $container): void
