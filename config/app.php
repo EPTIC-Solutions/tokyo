@@ -1,5 +1,6 @@
 <?php
 
 return [
-    'version' => 'v0.0.1',
+    'name' => 'Tokyo',
+    'version' => '0.0.1',
 ];
