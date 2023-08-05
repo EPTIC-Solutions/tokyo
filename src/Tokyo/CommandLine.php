@@ -38,4 +38,12 @@ class CommandLine
             [$process->getOutput(), $process->getExitCode()] :
             [$process->getErrorOutput(), $process->getExitCode()];
     }
+
+    /**
+     * Make sure the user will not be asked for the sudo password in random moments.
+     */
+    public function promptSudoPassword(): void
+    {
+        $this->runCommand(['sudo', '-v']);
+    }
 }
