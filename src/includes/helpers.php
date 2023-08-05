@@ -139,7 +139,12 @@ function resolve(string $class, array $parameters = []): mixed
     if (container()->has($class)) {
         return container()->get($class);
     }
-    return container()->make($class, $parameters);
+
+    try {
+        return container()->make($class, $parameters);
+    } catch (\Exception $e) {
+        return null;
+    }
 }
 
 /**

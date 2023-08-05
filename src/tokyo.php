@@ -18,22 +18,31 @@ if (!isInstalled()) {
 
         output('Installing Tokyo...');
 
+        // Install all packages
         $pm->ensureInstalled('nginx');
         $pm->ensureInstalled('dnsmasq');
 
+        // Start all services
         $sm->start('nginx');
 
+        // Install all configuration
         $conf->install();
     });
 } else {
-    $app->command('uninstall', function (CommandLine $cli, Configuration $conf, PackageManager $pm) {
+    $app->command('uninstall', function (CommandLine $cli, Configuration $conf, PackageManager $pm, ServiceManager $sm) {
         $cli->promptSudoPassword();
 
         output("Removing Tokyo... 🥺");
 
-        $conf->uninstall();
+        // Stop all services
+        $sm->stop('nginx');
+
+        // Uninstall all packages
         $pm->uninstall('nginx');
         $pm->uninstall('dnsmasq');
+
+        // Remove all configuration
+        $conf->uninstall();
 
         output('Tokyo has been removed');
     });

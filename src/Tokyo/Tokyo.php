@@ -5,9 +5,6 @@ namespace Tokyo;
 use DI\Container;
 use Tokyo\Contracts\PackageManager;
 use Tokyo\Contracts\ServiceManager;
-use Tokyo\PackageManagers\Apt;
-use Tokyo\ServiceManagers\LinuxService;
-use Tokyo\ServiceManagers\Systemd;
 
 class Tokyo
 {
@@ -40,8 +37,8 @@ class Tokyo
     private function getAvailablePackageManager(): PackageManager
     {
         return collect([
-            // Brew::class,
-            Apt::class,
+            \Tokyo\PackageManagers\Brew::class,
+            \Tokyo\PackageManagers\Apt::class,
         ])
             ->map(fn (string $pm) => resolve($pm))
             ->first(static function (PackageManager $pm) {
@@ -58,9 +55,9 @@ class Tokyo
     static private function getAvailableServiceManager(): ServiceManager
     {
         return collect([
-            // ServiceManagersBrew::class,
-            LinuxService::class,
-            Systemd::class,
+            \Tokyo\ServiceManagers\Brew::class,
+            \Tokyo\ServiceManagers\LinuxService::class,
+            \Tokyo\ServiceManagers\Systemd::class,
         ])
             ->map(fn (string $sm) => resolve($sm))
             ->first(static function (ServiceManager $sm) {

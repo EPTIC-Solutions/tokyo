@@ -8,9 +8,15 @@ use Tokyo\Contracts\PackageManager;
 
 class Brew implements PackageManager
 {
+    private readonly string $BREW_PREFIX;
+
     public function __construct(private readonly CommandLine $cli)
     {
-        //
+        if(!resolve('BREW_PREFIX')) {
+            container()->set('BREW_PREFIX', trim($this->cli->run(['brew', '--prefix'])[0]));
+        }
+
+        $this->BREW_PREFIX = resolve('BREW_PREFIX');
     }
 
     public function packages(): Collection
@@ -58,13 +64,9 @@ class Brew implements PackageManager
     {
         if ($this->installed($package)) {
             task("🍺 [$package] is being uninstalled via Brew", function () use ($package) {
-                [, $errorCode] = $this->cli->run(['brew', 'uninstall', $package]);
+                $this->cli->run(['brew', 'uninstall', '--force', $package]);
 
-                if ($errorCode !== 0) {
-                    error("Could not uninstall [$package] via Brew");
-
-                    exit(1);
-                }
+                $this->cli->run(['sudo', 'rm', '-rf', "$this->BREW_PREFIX/Cellar/$package"]);
             });
         }
     }
