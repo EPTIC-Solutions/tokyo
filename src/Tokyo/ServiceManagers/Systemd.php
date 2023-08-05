@@ -3,6 +3,7 @@
 namespace Tokyo\ServiceManagers;
 
 use Illuminate\Support\Collection;
+use Symfony\Component\Process\ExecutableFinder;
 use Tokyo\CommandLine;
 use Tokyo\Contracts\ServiceManager;
 
@@ -31,9 +32,7 @@ class Systemd implements ServiceManager
 
     public function isAvailable(): bool
     {
-        [, $errorCode] = $this->cli->run(['which', 'systemd']);
-
-        return $errorCode === 0;
+        return resolve(ExecutableFinder::class)->find('systemctl') !== null;
     }
 
     public function getRunningServices(): Collection

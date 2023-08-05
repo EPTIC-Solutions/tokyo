@@ -14,7 +14,8 @@ $containerBuilder->addDefinitions([
             'app' => require __DIR__ . '/../config/app.php',
         ];
     },
-    'eventDispatcher' => fn () => $eventDispatcher
+    'eventDispatcher' => fn () => $eventDispatcher,
+    \Symfony\Component\Process\ExecutableFinder::class => new \Symfony\Component\Process\ExecutableFinder(),
 ]);
 
 $eventDispatcher->addListener(

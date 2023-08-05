@@ -3,6 +3,7 @@
 namespace Tokyo\PackageManagers;
 
 use Illuminate\Support\Collection;
+use Symfony\Component\Process\ExecutableFinder;
 use Tokyo\CommandLine;
 use Tokyo\Contracts\PackageManager;
 
@@ -73,8 +74,7 @@ class Apt implements PackageManager
 
     public function isAvailable(): bool
     {
-        [, $errorCode] = $this->cli->run(['which', 'apt']);
-        return $errorCode === 0;
+        return resolve(ExecutableFinder::class)->find('apt') !== null;
     }
 
     public function supportedPhpVersions(): Collection

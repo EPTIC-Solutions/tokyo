@@ -3,6 +3,7 @@
 namespace Tokyo\ServiceManagers;
 
 use Illuminate\Support\Collection;
+use Symfony\Component\Process\ExecutableFinder;
 use Tokyo\CommandLine;
 use Tokyo\Contracts\ServiceManager;
 
@@ -59,9 +60,7 @@ class Brew implements ServiceManager
 
     public function isAvailable(): bool
     {
-        [, $errorCode] = $this->cli->run(['which', 'brew']);
-
-        return $errorCode === 0;
+        return resolve(ExecutableFinder::class)->find('brew') !== null;
     }
 
     public function getRunningServices(): Collection
