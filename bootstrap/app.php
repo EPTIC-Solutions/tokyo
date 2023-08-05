@@ -21,6 +21,7 @@ $containerBuilder->addDefinitions([
 $eventDispatcher->addListener(
     ConsoleEvents::COMMAND,
     function (ConsoleCommandEvent $event) {
+        reader($event->getInput());
         writer($event->getOutput());
     }
 );

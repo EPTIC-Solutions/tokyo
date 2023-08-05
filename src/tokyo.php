@@ -16,7 +16,7 @@ if (!isInstalled()) {
     $app->command('install', function (CommandLine $cli, Configuration $conf, PackageManager $pm, ServiceManager $sm) {
         $cli->promptSudoPassword();
 
-        output('Installing Tokyo...');
+        output("Installing Tokyo...\n");
 
         // Install all packages
         $pm->ensureInstalled('nginx');
@@ -27,12 +27,19 @@ if (!isInstalled()) {
 
         // Install all configuration
         $conf->install();
+
+        output("\nTokyo is now installed");
     });
 } else {
     $app->command('uninstall', function (CommandLine $cli, Configuration $conf, PackageManager $pm, ServiceManager $sm) {
+        $answer = ask('Are you sure you want to uninstall Tokyo? (yes/no)', 'no');
+        if (!str_starts_with(strtolower($answer), 'y')) {
+            return;
+        }
+
         $cli->promptSudoPassword();
 
-        output("Removing Tokyo... 🥺");
+        output("Removing Tokyo... 🥺\n");
 
         // Stop all services
         $sm->stop('nginx');
@@ -44,7 +51,7 @@ if (!isInstalled()) {
         // Remove all configuration
         $conf->uninstall();
 
-        output('Tokyo has been removed');
+        output("\nTokyo has been removed");
     });
 }
 

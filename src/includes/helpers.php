@@ -3,8 +3,13 @@
 use DI\Container;
 use Silly\Application;
 use Symfony\Component\Console\Helper\Table;
+use Symfony\Component\Console\Helper\QuestionHelper;
+use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\Question;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Tokyo\Tokyo;
 
 /**
@@ -53,7 +58,7 @@ function user()
     return $_SERVER['SUDO_USER'] ?? $_SERVER['USER'];
 }
 
-function writer(OutputInterface $writer = null): ConsoleOutput|OutputInterface|null
+function writer(OutputInterface $writer = null): OutputInterface
 {
     $container = container();
 
@@ -67,7 +72,31 @@ function writer(OutputInterface $writer = null): ConsoleOutput|OutputInterface|n
 
     $container->set('writer', $writer);
 
-    return null;
+    return $writer;
+}
+
+function reader(InputInterface $reader = null): InputInterface
+{
+    $container = container();
+
+    if (!$reader) {
+        if (!$container->has('reader')) {
+            $container->set('reader', new ArgvInput());
+        }
+
+        return $container->make('reader');
+    }
+
+    $container->set('reader', $reader);
+
+    return $reader;
+}
+
+function ask(string $question, ?string $default = null, ?callable $validator = null)
+{
+    $io = new SymfonyStyle(reader(), writer());
+
+    return $io->ask($question, $default, $validator);
 }
 
 function info($output): void
