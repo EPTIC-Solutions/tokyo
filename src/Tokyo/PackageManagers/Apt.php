@@ -47,7 +47,9 @@ class Apt implements PackageManager
             [, $errorCode] = $this->cli->run(['sudo', 'apt', 'install', '-y', $package]);
 
             if ($errorCode !== 0) {
-                throw new \DomainException("Could not find [$package] via Apt");
+                error("Could not install [$package] via Apt");
+
+                exit(1);
             }
         });
     }
@@ -58,7 +60,9 @@ class Apt implements PackageManager
             [, $errorCode] = $this->cli->run(['sudo', 'apt', 'remove', '-y', $package]);
 
             if ($errorCode !== 0) {
-                throw new \DomainException("Could not find [$package] via Apt");
+                error("Could not uninstall [$package] via Apt");
+
+                exit(1);
             }
         });
     }

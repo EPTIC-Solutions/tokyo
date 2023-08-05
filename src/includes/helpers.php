@@ -105,11 +105,7 @@ function task(string $title, ?Closure $task = null, string $loadingText = '...')
     if ($task === null) {
         $result = true;
     } else {
-        try {
-            $result = $task() === false ? false : true;
-        } catch (\Exception $taskException) {
-            $result = false;
-        }
+        $result = $task() === false ? false : true;
     }
 
     if ($writer->isDecorated()) { // Determines if we can use escape sequences
@@ -123,10 +119,6 @@ function task(string $title, ?Closure $task = null, string $loadingText = '...')
     }
 
     output("$title: " . ($result ? '<info>✔</info>' : '<error>failed</error>'));
-
-    if (isset($taskException)) {
-        throw $taskException;
-    }
 
     return $result;
 }
@@ -156,7 +148,9 @@ function resolve(string $class, array $parameters = []): mixed
 function should_be_sudo(): void
 {
     if (!isset($_SERVER['SUDO_USER'])) {
-        throw new Exception('This command must be run with sudo.');
+        error('This command must be run as sudo.');
+
+        exit(1);
     }
 }
 

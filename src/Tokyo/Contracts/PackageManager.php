@@ -22,7 +22,7 @@ interface PackageManager
     public function ensureInstalled(string $package): void;
 
     /**
-     * Install the given package and throw an exception on failure.
+     * Install the given package or error on failure.
      */
     public function installOrFail(string $package): void;
 

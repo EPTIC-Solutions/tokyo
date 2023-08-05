@@ -3,8 +3,6 @@
 namespace Tokyo;
 
 use FilesystemIterator;
-use Tokyo\Exceptions\DirectoryNotFoundException;
-use Tokyo\Exceptions\FileNotFoundException;
 
 class Filesystem
 {
@@ -42,11 +40,15 @@ class Filesystem
                 $this->rm(iterator_to_array(new FilesystemIterator($file)));
 
                 if (!@rmdir($file)) {
-                    throw new DirectoryNotFoundException("Could not delete directory: $file");
+                    error("Could not delete directory: $file");
+
+                    exit(1);
                 }
             } else {
                 if (!@unlink($file)) {
-                    throw new FileNotFoundException("Could not delete file: $file");
+                    error("Could not delete file: $file");
+
+                    exit(1);
                 }
             }
         }
@@ -65,7 +67,9 @@ class Filesystem
     public function get(string $path): string
     {
         if (!$this->exists($path)) {
-            throw new \Exception("Can not find file: $path");
+            error("File does not exist: $path");
+
+            exit(1);
         }
         return file_get_contents($path);
     }

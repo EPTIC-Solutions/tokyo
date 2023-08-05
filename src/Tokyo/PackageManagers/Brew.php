@@ -47,7 +47,9 @@ class Brew implements PackageManager
             [, $errorCode] = $this->cli->run(['brew', 'install', $package]);
 
             if ($errorCode !== 0) {
-                throw new \DomainException("Could not find [$package] via Brew");
+                error("Could not install [$package] via Brew");
+
+                exit(1);
             }
         });
     }
@@ -59,7 +61,9 @@ class Brew implements PackageManager
                 [, $errorCode] = $this->cli->run(['brew', 'uninstall', $package]);
 
                 if ($errorCode !== 0) {
-                    throw new \DomainException("Could not find [$package] via Brew");
+                    error("Could not uninstall [$package] via Brew");
+
+                    exit(1);
                 }
             });
         }
