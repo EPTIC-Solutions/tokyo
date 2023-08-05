@@ -6,12 +6,23 @@ use Illuminate\Support\Collection;
 use Symfony\Component\Process\ExecutableFinder;
 use Tokyo\CommandLine;
 use Tokyo\Contracts\ServiceManager;
+use Tokyo\OperatingSystem;
 
 class Brew implements ServiceManager
 {
     public function __construct(private readonly CommandLine $cli)
     {
         //
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function supportedOperatingSystems(): array
+    {
+        return [
+            OperatingSystem::DARWIN,
+        ];
     }
 
     public function start(array|string $services): void
@@ -27,6 +38,8 @@ class Brew implements ServiceManager
 
                 if ($errorCode !== 0) {
                     error("[$service] Could not start service");
+
+                    exit(1);
                 }
             });
         }
@@ -45,6 +58,8 @@ class Brew implements ServiceManager
 
                 if ($errorCode !== 0) {
                     error("[$service] Could not stop service");
+
+                    exit(1);
                 }
             });
         }
@@ -56,6 +71,7 @@ class Brew implements ServiceManager
 
     public function status(array|string $services): bool
     {
+        return true;
     }
 
     public function isAvailable(): bool

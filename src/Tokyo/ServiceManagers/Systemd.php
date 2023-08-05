@@ -6,6 +6,7 @@ use Illuminate\Support\Collection;
 use Symfony\Component\Process\ExecutableFinder;
 use Tokyo\CommandLine;
 use Tokyo\Contracts\ServiceManager;
+use Tokyo\OperatingSystem;
 
 class Systemd implements ServiceManager
 {
@@ -14,20 +15,31 @@ class Systemd implements ServiceManager
         //
     }
 
-    public function start(array|string $services): bool
+    /**
+     * @inheritDoc
+     */
+    public function supportedOperatingSystems(): array
+    {
+        return [
+            OperatingSystem::LINUX,
+        ];
+    }
+
+    public function start(array|string $services): void
     {
     }
 
-    public function stop(array|string $services): bool
+    public function stop(array|string $services): void
     {
     }
 
-    public function restart(array|string $services): bool
+    public function restart(array|string $services): void
     {
     }
 
     public function status(array|string $services): bool
     {
+        return true;
     }
 
     public function isAvailable(): bool

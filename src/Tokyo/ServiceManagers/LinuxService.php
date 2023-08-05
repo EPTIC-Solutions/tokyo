@@ -6,6 +6,7 @@ use Illuminate\Support\Collection;
 use Symfony\Component\Process\ExecutableFinder;
 use Tokyo\CommandLine;
 use Tokyo\Contracts\ServiceManager;
+use Tokyo\OperatingSystem;
 
 class LinuxService implements ServiceManager
 {
@@ -14,7 +15,17 @@ class LinuxService implements ServiceManager
         //
     }
 
-    public function start(array|string $services)
+    /**
+     * @inheritDoc
+     */
+    public function supportedOperatingSystems(): array
+    {
+        return [
+            OperatingSystem::LINUX,
+        ];
+    }
+
+    public function start(array|string $services): void
     {
         $services = is_array($services) ? $services : func_get_args();
 
@@ -24,12 +35,14 @@ class LinuxService implements ServiceManager
 
                 if ($errorCode !== 0) {
                     error("[$service] Could not start service");
+
+                    exit(1);
                 }
             });
         };
     }
 
-    public function stop(array|string $services)
+    public function stop(array|string $services): void
     {
         $services = is_array($services) ? $services : func_get_args();
 
@@ -39,12 +52,14 @@ class LinuxService implements ServiceManager
 
                 if ($errorCode !== 0) {
                     error("[$service] Could not stop service");
+
+                    exit(1);
                 }
             });
         };
     }
 
-    public function restart(array|string $services)
+    public function restart(array|string $services): void
     {
         $services = is_array($services) ? $services : func_get_args();
 
@@ -54,6 +69,8 @@ class LinuxService implements ServiceManager
 
                 if ($errorCode !== 0) {
                     error("[$service] Could not restart service");
+
+                    exit(1);
                 }
             });
         };

@@ -6,14 +6,25 @@ use Illuminate\Support\Collection;
 use Symfony\Component\Process\ExecutableFinder;
 use Tokyo\CommandLine;
 use Tokyo\Contracts\PackageManager;
+use Tokyo\OperatingSystem;
 
 class Brew implements PackageManager
 {
     private readonly string $BREW_PREFIX;
 
+    /**
+     * @inheritDoc
+     */
+    public function supportedOperatingSystems(): array
+    {
+        return [
+            OperatingSystem::DARWIN,
+        ];
+    }
+
     public function __construct(private readonly CommandLine $cli)
     {
-        if(!resolve('BREW_PREFIX')) {
+        if (!resolve('BREW_PREFIX')) {
             container()->set('BREW_PREFIX', trim($this->cli->run(['brew', '--prefix'])[0]));
         }
 

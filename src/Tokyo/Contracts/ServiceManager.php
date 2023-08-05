@@ -7,6 +7,12 @@ use Illuminate\Support\Collection;
 interface ServiceManager
 {
     /**
+     * The supported operating systems.
+     * @var array<int, \Tokyo\OperatingSystem>
+     */
+    public function supportedOperatingSystems(): array;
+
+    /**
      * Start the services.
      */
     public function start(array|string $services);

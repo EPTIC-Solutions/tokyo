@@ -7,6 +7,12 @@ use Illuminate\Support\Collection;
 interface PackageManager
 {
     /**
+     * The supported operating systems.
+     * @var array<int, \Tokyo\OperatingSystem>
+     */
+    public function supportedOperatingSystems(): array;
+
+    /**
      * Get all the installed packages.
      */
     public function packages(): Collection;

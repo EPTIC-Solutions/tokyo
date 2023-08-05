@@ -6,12 +6,23 @@ use Illuminate\Support\Collection;
 use Symfony\Component\Process\ExecutableFinder;
 use Tokyo\CommandLine;
 use Tokyo\Contracts\PackageManager;
+use Tokyo\OperatingSystem;
 
 class Apt implements PackageManager
 {
     public function __construct(private readonly CommandLine $cli)
     {
         //
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function supportedOperatingSystems(): array
+    {
+        return [
+            OperatingSystem::LINUX,
+        ];
     }
 
     public function packages(): Collection
@@ -58,7 +69,7 @@ class Apt implements PackageManager
     public function uninstall(string $package): void
     {
         task("🍺 [$package] is being uninstalled via Apt", function () use ($package) {
-            [, $errorCode] = $this->cli->run(['sudo', 'apt', 'remove', '-y', $package]);
+            [, $errorCode] = $this->cli->run(['sudo', 'apt', 'purge', '-y', $package]);
 
             if ($errorCode !== 0) {
                 error("Could not uninstall [$package] via Apt");
