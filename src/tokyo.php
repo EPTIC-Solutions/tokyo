@@ -14,22 +14,22 @@ $app = new Application(config('app.name'), config('app.version'));
 
 resolve(Tokyo::class)->setup();
 
-if (!isInstalled()) {
-    $app->command('install', function (CommandLine $cli, Configuration $conf) {
-        $cli->ensureSudo();
+$app->command('install', function (CommandLine $cli, Configuration $conf) {
+    $cli->ensureSudo();
 
-        output("Installing Tokyo...\n");
+    output("Installing Tokyo...\n");
 
-        // Install all configuration
-        $conf->install();
+    // Install all configuration
+    $conf->install();
 
-        resolve(Nginx::class)->install();
-        resolve(Php::class)->install();
-        resolve(DnsMasq::class)->install();
+    resolve(Nginx::class)->install();
+    resolve(Php::class)->install();
+    resolve(DnsMasq::class)->install();
 
-        output("\nTokyo is now installed");
-    });
-} else {
+    output("\nTokyo is now installed");
+});
+
+if (isInstalled()) {
     $app->command('uninstall', function (CommandLine $cli, Configuration $conf) {
         $answer = ask('Are you sure you want to uninstall Tokyo? (yes/no)', 'no');
         if (!str_starts_with(strtolower($answer), 'y')) {
