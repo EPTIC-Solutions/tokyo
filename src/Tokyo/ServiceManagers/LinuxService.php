@@ -12,6 +12,7 @@ class LinuxService implements ServiceManager
 {
     public function __construct(private readonly CommandLine $cli)
     {
+        //
     }
 
     public function supportedOperatingSystems(): array

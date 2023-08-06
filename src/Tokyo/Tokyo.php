@@ -12,6 +12,7 @@ class Tokyo
 
     public function __construct(private readonly System $system)
     {
+        //
     }
 
     public function setup(): void

@@ -20,6 +20,7 @@ class DnsMasq implements Service
         private readonly ServiceManager $sm,
         private readonly PackageManager $pm,
     ) {
+        //
     }
 
     public function getServiceName(): string
@@ -39,10 +40,8 @@ class DnsMasq implements Service
         }
 
         $this->configureDomain();
-        // $this->fs->putAsUser('/etc/NetworkManager/conf.d/tokyo.conf', $this->fs->get(__DIR__ . '/../../stubs/networkmanager.conf'));
         $this->fs->putAsUser('/etc/dnsmasq.conf', $this->fs->get(__DIR__ . '/../../stubs/dnsmasq.conf'));
 
-        // $this->fs->backup('/etc/resolv.conf');
         $this->sm->restart('network-manager');
 
         $this->sm->enable($serviceName);

@@ -8,6 +8,7 @@ class Configuration
 
     public function __construct(private readonly Filesystem $fs)
     {
+        //
     }
 
     public function install()

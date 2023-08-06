@@ -6,6 +6,7 @@ class Filesystem
 {
     public function __construct(private readonly CommandLine $cli)
     {
+        //
     }
 
     /**

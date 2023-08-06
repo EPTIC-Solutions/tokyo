@@ -25,6 +25,7 @@ class Nginx implements Service
         private readonly ServiceManager $sm,
         private readonly PackageManager $pm,
     ) {
+        //
     }
 
     public function getServiceName(): string

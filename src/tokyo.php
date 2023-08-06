@@ -4,8 +4,6 @@ use Psy\Shell;
 use Silly\Application;
 use Tokyo\CommandLine;
 use Tokyo\Configuration;
-use Tokyo\Contracts\PackageManager;
-use Tokyo\Contracts\ServiceManager;
 use Tokyo\Services\Nginx;
 use Tokyo\Services\Php;
 use Tokyo\Services\DnsMasq;
@@ -17,7 +15,7 @@ $app = new Application(config('app.name'), config('app.version'));
 resolve(Tokyo::class)->setup();
 
 if (!isInstalled()) {
-    $app->command('install', function (CommandLine $cli, Configuration $conf, PackageManager $pm, ServiceManager $sm) {
+    $app->command('install', function (CommandLine $cli, Configuration $conf) {
         $cli->ensureSudo();
 
         output("Installing Tokyo...\n");
@@ -32,7 +30,7 @@ if (!isInstalled()) {
         output("\nTokyo is now installed");
     });
 } else {
-    $app->command('uninstall', function (CommandLine $cli, Configuration $conf, PackageManager $pm, ServiceManager $sm) {
+    $app->command('uninstall', function (CommandLine $cli, Configuration $conf) {
         $answer = ask('Are you sure you want to uninstall Tokyo? (yes/no)', 'no');
         if (!str_starts_with(strtolower($answer), 'y')) {
             return;
