@@ -23,18 +23,23 @@ class Apt implements PackageManager
 
     public function packages(): Collection
     {
-        [$packagesRaw, $errorCode] = $this->cli->runAsUser('dpkg-query --list | grep ^ii | sed \'s/\s\+/ /g\'');
+        [$packagesRaw, $errorCode] = $this->cli->run(['dpkg-query', '--list']);
 
         if (0 !== $errorCode) {
             return collect();
         }
 
         return collect(explode("\n", trim($packagesRaw)))
-            ->map(fn ($package) => [
-                'name' => explode(' ', $package)[1],
-                'version' => explode(' ', $package)[2],
-                'arch' => explode(' ', $package)[3],
-            ]);
+            ->filter(fn ($package) => strpos($package, 'ii') === 0)
+            ->map(function ($package) {
+                $package = explode(' ', preg_replace('/\s+/', ' ', $package));
+
+                return [
+                    'name' => $package[1],
+                    'version' => $package[2],
+                    'arch' => $package[3],
+                ];
+            });
     }
 
     public function installed(string $package): bool

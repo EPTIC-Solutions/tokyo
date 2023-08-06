@@ -27,9 +27,15 @@ class Nginx implements Service
     ) {
     }
 
+    public function getServiceName(): string
+    {
+        return 'nginx';
+    }
+
     public function install(): void
     {
-        $this->pm->ensureInstalled('nginx');
+        $serviceName = $this->getServiceName();
+        $this->pm->ensureInstalled($serviceName);
 
         if ($this->pm instanceof Brew) {
         } else {
@@ -40,8 +46,8 @@ class Nginx implements Service
         $this->installConfiguration();
         $this->installTokyoConfiguration();
 
-        $this->sm->start('nginx');
-        $this->sm->enable('nginx');
+        $this->sm->start($serviceName);
+        $this->sm->enable($serviceName);
     }
 
     private function installConfiguration(): void
@@ -85,8 +91,12 @@ class Nginx implements Service
 
     public function uninstall(): void
     {
-        $this->sm->disable('nginx');
-        $this->sm->stop('nginx');
-        $this->pm->uninstall('nginx');
+        $serviceName = $this->getServiceName();
+
+        if ($this->pm->installed($serviceName)) {
+            $this->sm->disable($serviceName);
+            $this->sm->stop($serviceName);
+            $this->pm->uninstall($serviceName);
+        }
     }
 }

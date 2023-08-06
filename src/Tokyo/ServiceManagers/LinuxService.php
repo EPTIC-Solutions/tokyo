@@ -98,14 +98,19 @@ class LinuxService implements ServiceManager
         $services = is_array($services) ? $services : func_get_args();
 
         foreach ($services as $service) {
-            $errorCode = task("[$service] service is now enabled", function () use ($service) {
-                [, $errorCode] = $this->cli->run(['update-rc.d', $service, 'enable']);
+            $error = '';
+            $errorCode = task("[$service] service is now enabled", function () use ($service, &$error) {
+                [$error, $errorCode] = $this->cli->run(['update-rc.d', $service, 'enable']);
 
                 return $errorCode;
             });
 
             if (0 !== $errorCode) {
                 error("[$service] Could not enable service");
+
+                if (isDebug()) {
+                    warning($error);
+                }
 
                 exit(1);
             }
@@ -117,14 +122,19 @@ class LinuxService implements ServiceManager
         $services = is_array($services) ? $services : func_get_args();
 
         foreach ($services as $service) {
-            $errorCode = task("[$service] service is now disabled", function () use ($service) {
-                [, $errorCode] = $this->cli->run(['update-rc.d', $service, 'disable']);
+            $error = '';
+            $errorCode = task("[$service] service is now disabled", function () use ($service, &$error) {
+                [$error, $errorCode] = $this->cli->run(['update-rc.d', $service, 'disable']);
 
                 return $errorCode;
             });
 
             if (0 !== $errorCode) {
                 error("[$service] Could not disable service");
+
+                if (isDebug()) {
+                    warning($error);
+                }
 
                 exit(1);
             }

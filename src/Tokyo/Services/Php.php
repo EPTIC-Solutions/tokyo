@@ -2,6 +2,7 @@
 
 namespace Tokyo\Services;
 
+use DomainException;
 use Tokyo\CommandLine;
 use Tokyo\Configuration;
 use Tokyo\Contracts\PackageManager;
@@ -29,6 +30,11 @@ class Php implements Service
     {
         $serviceName = $this->getServiceName();
         $this->pm->ensureInstalled($serviceName);
+
+        if ($this->pm->installed('apache2')) {
+            $this->sm->disable('apache2');
+            $this->sm->stop('apache2');
+        }
 
         $this->sm->enable($serviceName);
         $this->sm->start($serviceName);
@@ -93,9 +99,7 @@ class Php implements Service
         ])->first(function ($path) {
             return is_dir($path);
         }, function () {
-            error('Unable to determine PHP-FPM configuration folder.');
-
-            exit(1);
+            throw new DomainException('Unable to determine PHP-FPM configuration folder.');
         });
 
         return $path;
@@ -113,11 +117,17 @@ class Php implements Service
 
     public function uninstall(): void
     {
-        $this->fs->rm($this->fpmConfigPath() . '/tokyo.conf');
+        try {
+            $this->fs->rm($this->fpmConfigPath() . '/tokyo.conf');
+        } catch (DomainException) {
+            // Ignore
+        }
 
         $serviceName = $this->getServiceName();
-        $this->sm->disable($serviceName);
-        $this->sm->stop($serviceName);
-        $this->pm->uninstall($serviceName);
+        if ($this->pm->installed($serviceName)) {
+            $this->sm->disable($serviceName);
+            $this->sm->stop($serviceName);
+            $this->pm->uninstall($serviceName);
+        }
     }
 }

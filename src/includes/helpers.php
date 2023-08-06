@@ -15,7 +15,7 @@ use Tokyo\Tokyo;
  */
 if (!defined('TOKYO_ROOT')) {
     if (!isTesting()) {
-        define('TOKYO_ROOT', $_SERVER['HOME'] . '/.config/eptic/tokyo');
+        define('TOKYO_ROOT', $_SERVER['HOME'] . '/.config/tokyo');
     } else {
         // Handle test cases
     }
