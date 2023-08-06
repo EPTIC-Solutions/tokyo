@@ -1,10 +1,12 @@
 [![https://github.com/EPTIC-Solutions/tokyo](https://banners.eptic.ro/api/tokyo)](https://github.com/EPTIC-Solutions/tokyo)
 
 # Tokyo
+
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/eptic/tokyo.svg?style=flat-square)](https://packagist.org/packages/eptic/tokyo)
 [![Total Downloads](https://img.shields.io/packagist/dt/eptic/tokyo.svg?style=flat-square)](https://packagist.org/packages/eptic/tokyo)
 
-An open-source cross-platform valet alternative.
+An open-source cross-platform alternative to valet.  
+Aiming to support Linux, MacOS and WSL.
 
 ## Documentation
 

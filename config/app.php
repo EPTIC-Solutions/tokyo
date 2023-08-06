@@ -2,5 +2,5 @@
 
 return [
     'name' => 'Tokyo',
-    'version' => '0.0.1',
+    'version' => file_get_contents(__DIR__ . '/../version'),
 ];
