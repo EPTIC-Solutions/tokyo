@@ -1,7 +1,7 @@
 {
   "$schema": "https://getcomposer.org/schema.json",
   "name": "eptic/tokyo",
-  "description": "Local php development for linux artisans.",
+  "description": "A cross-platform php development environment.",
   "type": "library",
   "license": "GPL-3.0",
   "require": {
