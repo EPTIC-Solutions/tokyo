@@ -2,13 +2,10 @@
 
 namespace Tokyo;
 
-use FilesystemIterator;
-
 class Filesystem
 {
     public function __construct(private readonly CommandLine $cli)
     {
-        //
     }
 
     /**
@@ -75,7 +72,7 @@ class Filesystem
             }
 
             if ($this->isDir($file)) {
-                $this->rm(iterator_to_array(new FilesystemIterator($file)));
+                $this->rm(iterator_to_array(new \FilesystemIterator($file)));
 
                 if (! @rmdir($file)) {
                     error("Could not delete directory: $file");
@@ -150,13 +147,13 @@ class Filesystem
      */
     public function backup($file)
     {
-        $to = $file.'.bak';
+        $to = $file . '.bak';
 
         if (! $this->exists($to)) {
             if ($this->exists($file)) {
                 [, $errorCode] = $this->cli->run(['sudo', 'mv', $file, $to]);
 
-                return $errorCode === 0;
+                return 0 === $errorCode;
             }
         }
 
@@ -171,12 +168,12 @@ class Filesystem
      */
     public function restore($file)
     {
-        $from = $file.'.bak';
+        $from = $file . '.bak';
 
         if ($this->exists($from)) {
             [, $errorCode] = $this->cli->run(['sudo', 'mv', $from, $file]);
 
-            return $errorCode === 0;
+            return 0 === $errorCode;
         }
 
         return false;

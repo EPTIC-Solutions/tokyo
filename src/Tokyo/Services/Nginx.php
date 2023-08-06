@@ -25,7 +25,6 @@ class Nginx implements Service
         private readonly ServiceManager $sm,
         private readonly PackageManager $pm,
     ) {
-        //
     }
 
     public function install(): void
@@ -33,7 +32,6 @@ class Nginx implements Service
         $this->pm->ensureInstalled('nginx');
 
         if ($this->pm instanceof Brew) {
-            //
         } else {
             $this->fs->ensureDirExists('/etc/nginx/sites-available');
             $this->fs->ensureDirExists('/etc/nginx/sites-enabled');
@@ -48,11 +46,11 @@ class Nginx implements Service
 
     private function installConfiguration(): void
     {
-        $config = $this->fs->get(__DIR__.'/../../stubs/nginx.conf');
+        $config = $this->fs->get(__DIR__ . '/../../stubs/nginx.conf');
 
         $this->fs->backup(self::NGINX_CONF);
 
-        $newConfig = (str_replace([
+        $newConfig = str_replace([
             'TOKYO_USER',
             'TOKYO_GROUP',
             'TOKYO_PID',
@@ -62,7 +60,7 @@ class Nginx implements Service
             group(),
             'pid /run/nginx.pid',
             TOKYO_ROOT,
-        ], $config));
+        ], $config);
 
         $this->fs->put(self::NGINX_CONF, $newConfig);
     }
@@ -78,7 +76,7 @@ class Nginx implements Service
             str_replace(
                 ['TOKYO_ROOT', 'TOKYO_SERVER', 'TOKYO_STATIC_PREFIX', 'TOKYO_PORT'],
                 [TOKYO_ROOT, TOKYO_SERVER, '123', $this->conf->read('port')],
-                $this->fs->get(__DIR__.'/../../stubs/tokyo.conf')
+                $this->fs->get(__DIR__ . '/../../stubs/tokyo.conf')
             )
         );
 

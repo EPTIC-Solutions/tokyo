@@ -12,7 +12,6 @@ class Tokyo
 
     public function __construct(private readonly System $system)
     {
-        //
     }
 
     public function setup(): void
@@ -32,7 +31,7 @@ class Tokyo
     }
 
     /**
-     * Determine the first available package manager
+     * Determine the first available package manager.
      */
     private function getAvailablePackageManager(): PackageManager
     {
@@ -53,7 +52,7 @@ class Tokyo
     }
 
     /**
-     * Determine the first available service manager
+     * Determine the first available service manager.
      */
     private function getAvailableServiceManager(): ServiceManager
     {

@@ -12,12 +12,8 @@ class Brew implements ServiceManager
 {
     public function __construct(private readonly CommandLine $cli)
     {
-        //
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function supportedOperatingSystems(): array
     {
         return [
@@ -92,7 +88,7 @@ class Brew implements ServiceManager
 
     public function isAvailable(): bool
     {
-        return resolve(ExecutableFinder::class)->find('brew') !== null;
+        return null !== resolve(ExecutableFinder::class)->find('brew');
     }
 
     public function getRunningServices(): Collection

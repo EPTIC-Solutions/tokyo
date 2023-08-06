@@ -44,7 +44,7 @@ class CommandLine
      */
     public function ensureSudo(): void
     {
-        if (getUID() !== 0) {
+        if (0 !== getUID()) {
             error('This command requires Tokyo to be run as sudo!');
 
             exit(1);

@@ -15,13 +15,13 @@ use Tokyo\Tokyo;
  */
 if (! defined('TOKYO_ROOT')) {
     if (! isTesting()) {
-        define('TOKYO_ROOT', $_SERVER['HOME'].'/.config/eptic/tokyo');
+        define('TOKYO_ROOT', $_SERVER['HOME'] . '/.config/eptic/tokyo');
     } else {
         // Handle test cases
     }
 }
 
-define('TOKYO_SERVER', realpath(__DIR__.'/../../server/server.php'));
+define('TOKYO_SERVER', realpath(__DIR__ . '/../../server/server.php'));
 
 function container(): Container
 {
@@ -57,7 +57,7 @@ function user()
 
 function group()
 {
-    return exec('id -gn '.user());
+    return exec('id -gn ' . user());
 }
 
 function writer(OutputInterface $writer = null): OutputInterface
@@ -103,17 +103,17 @@ function ask(string $question, string $default = null, callable $validator = nul
 
 function info($output): void
 {
-    output('<info>'.$output.'</info>');
+    output('<info>' . $output . '</info>');
 }
 
 function warning(string $output): void
 {
-    output('<fg=yellow>'.$output.'</>');
+    output('<fg=yellow>' . $output . '</>');
 }
 
 function error(string $output): void
 {
-    output('<error>'.$output.'</error>');
+    output('<error>' . $output . '</error>');
 }
 
 /**
@@ -133,26 +133,26 @@ function task(string $title, Closure $task = null, string $loadingText = '...')
     $writer = writer();
     $writer->write("$title: <comment>{$loadingText}</comment>");
 
-    if ($task === null) {
+    if (null === $task) {
         $errorCode = 0;
     } else {
         $errorCode = $task();
-        if ($errorCode === null) {
+        if (null === $errorCode) {
             $errorCode = 0;
         }
     }
 
     if ($writer->isDecorated()) { // Determines if we can use escape sequences
         // Move the cursor to the beginning of the line
-        $writer->write(("\x0D"));
+        $writer->write("\x0D");
 
         // Erase the line
-        $writer->write(("\x1B[2K"));
+        $writer->write("\x1B[2K");
     } else {
         output(''); // Make sure we first close the previous line
     }
 
-    output("$title: ".(($errorCode === 0) ? '<info>✔</info>' : '<error>failed</error>'));
+    output("$title: " . ((0 === $errorCode) ? '<info>✔</info>' : '<error>failed</error>'));
 
     return $errorCode;
 }
@@ -200,7 +200,7 @@ function isInstalled(): bool
 
 function isTesting(): bool
 {
-    return strpos($_SERVER['SCRIPT_NAME'], 'phpunit') !== false;
+    return false !== strpos($_SERVER['SCRIPT_NAME'], 'phpunit');
 }
 
 function getUID(): int
@@ -214,5 +214,5 @@ function getUID(): int
 
 function isDebug(): bool
 {
-    return getenv('TOKYO_DEBUG') === 'true';
+    return 'true' === getenv('TOKYO_DEBUG');
 }

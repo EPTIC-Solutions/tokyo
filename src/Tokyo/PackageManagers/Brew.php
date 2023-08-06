@@ -12,9 +12,6 @@ class Brew implements PackageManager
 {
     private readonly string $BREW_PREFIX;
 
-    /**
-     * {@inheritDoc}
-     */
     public function supportedOperatingSystems(): array
     {
         return [
@@ -35,7 +32,7 @@ class Brew implements PackageManager
     {
         [$output, $errorCode] = $this->cli->runAsUser(['brew', 'list']);
 
-        if ($errorCode !== 0) {
+        if (0 !== $errorCode) {
             return collect();
         }
 
@@ -67,7 +64,7 @@ class Brew implements PackageManager
             return $errorCode;
         });
 
-        if ($errorCode !== 0) {
+        if (0 !== $errorCode) {
             error("Could not install [$package] via Brew");
 
             exit(1);
@@ -91,7 +88,7 @@ class Brew implements PackageManager
 
     public function isAvailable(): bool
     {
-        return resolve(ExecutableFinder::class)->find('brew') !== null;
+        return null !== resolve(ExecutableFinder::class)->find('brew');
     }
 
     public function supportedPhpVersions(): Collection

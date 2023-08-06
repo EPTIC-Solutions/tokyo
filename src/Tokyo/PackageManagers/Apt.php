@@ -12,12 +12,8 @@ class Apt implements PackageManager
 {
     public function __construct(private readonly CommandLine $cli)
     {
-        //
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function supportedOperatingSystems(): array
     {
         return [
@@ -29,7 +25,7 @@ class Apt implements PackageManager
     {
         [$packagesRaw, $errorCode] = $this->cli->runAsUser('dpkg-query --list | grep ^ii | sed \'s/\s\+/ /g\'');
 
-        if ($errorCode !== 0) {
+        if (0 !== $errorCode) {
             return collect();
         }
 
@@ -61,7 +57,7 @@ class Apt implements PackageManager
             return $errorCode;
         });
 
-        if ($errorCode !== 0) {
+        if (0 !== $errorCode) {
             error("Could not install [$package] via Apt");
 
             exit(1);
@@ -76,7 +72,7 @@ class Apt implements PackageManager
             return $errorCode;
         });
 
-        if ($errorCode !== 0) {
+        if (0 !== $errorCode) {
             error("Could not uninstall [$package] via Apt");
 
             exit(1);
@@ -89,14 +85,14 @@ class Apt implements PackageManager
 
     public function isAvailable(): bool
     {
-        return resolve(ExecutableFinder::class)->find('apt') !== null;
+        return null !== resolve(ExecutableFinder::class)->find('apt');
     }
 
     public function supportedPhpVersions(): Collection
     {
         [$output, $errorCode] = $this->cli->runAsUser('apt-cache search php | grep -P "^php\d\.\d \-"');
 
-        if ($errorCode !== 0) {
+        if (0 !== $errorCode) {
             return collect();
         }
 

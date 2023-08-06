@@ -12,12 +12,8 @@ class Systemd implements ServiceManager
 {
     public function __construct(private readonly CommandLine $cli)
     {
-        //
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function supportedOperatingSystems(): array
     {
         return [
@@ -52,7 +48,7 @@ class Systemd implements ServiceManager
 
     public function isAvailable(): bool
     {
-        return resolve(ExecutableFinder::class)->find('systemctl') !== null;
+        return null !== resolve(ExecutableFinder::class)->find('systemctl');
     }
 
     public function getRunningServices(): Collection

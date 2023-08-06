@@ -12,12 +12,8 @@ class LinuxService implements ServiceManager
 {
     public function __construct(private readonly CommandLine $cli)
     {
-        //
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function supportedOperatingSystems(): array
     {
         return [
@@ -37,7 +33,7 @@ class LinuxService implements ServiceManager
                 return $errorCode;
             });
 
-            if ($errorCode !== 0) {
+            if (0 !== $errorCode) {
                 error("[$service] Could not start service");
 
                 if (isDebug()) {
@@ -61,7 +57,7 @@ class LinuxService implements ServiceManager
                 return $errorCode;
             });
 
-            if ($errorCode !== 0) {
+            if (0 !== $errorCode) {
                 error("[$service] Could not stop service");
 
                 if (isDebug()) {
@@ -85,7 +81,7 @@ class LinuxService implements ServiceManager
                 return $errorCode;
             });
 
-            if ($errorCode !== 0) {
+            if (0 !== $errorCode) {
                 error("[$service] Could not restart service");
 
                 if (isDebug()) {
@@ -108,7 +104,7 @@ class LinuxService implements ServiceManager
                 return $errorCode;
             });
 
-            if ($errorCode !== 0) {
+            if (0 !== $errorCode) {
                 error("[$service] Could not enable service");
 
                 exit(1);
@@ -127,7 +123,7 @@ class LinuxService implements ServiceManager
                 return $errorCode;
             });
 
-            if ($errorCode !== 0) {
+            if (0 !== $errorCode) {
                 error("[$service] Could not disable service");
 
                 exit(1);
@@ -142,7 +138,7 @@ class LinuxService implements ServiceManager
 
     public function isAvailable(): bool
     {
-        return resolve(ExecutableFinder::class)->find('service') !== null;
+        return null !== resolve(ExecutableFinder::class)->find('service');
     }
 
     public function getRunningServices(): Collection
