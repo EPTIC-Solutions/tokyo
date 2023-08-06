@@ -185,4 +185,17 @@ class Filesystem
 
         return false;
     }
+
+    /**
+     * Scan the given directory path.
+     */
+    public function scandir(string $path): array
+    {
+        return collect(scandir($path))
+            ->reject(function ($file) {
+                return in_array($file, ['.', '..']);
+            })
+            ->values()
+            ->all();
+    }
 }

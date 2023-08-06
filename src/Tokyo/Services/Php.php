@@ -111,7 +111,7 @@ class Php implements Service
         return 'tokyof' . $version . '.sock';
     }
 
-    private function getPhpVersion(): string
+    public function getPhpVersion(): string
     {
         return PHP_MAJOR_VERSION . '.' . PHP_MINOR_VERSION;
     }

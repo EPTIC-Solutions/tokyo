@@ -76,6 +76,18 @@ if (isInstalled()) {
 
         info('Site [' . $name . '] has been unlinked from Tokyo');
     })->setDescription('Unlink the current working directory form Tokyo');
+
+    $app->command('parked', function (Site $site) {
+        $parked = $site->parked();
+
+        table(['Site', 'Secured', 'URL', 'Path', 'PHP Version'], $parked->all());
+    })->setDescription('Unlink the current working directory form Tokyo');
+
+    $app->command('linked', function (Site $site) {
+        $linked = $site->linked();
+
+        table(['Site', 'Secured', 'URL', 'Path', 'PHP Version'], $linked->all());
+    })->setDescription('Unlink the current working directory form Tokyo');
 }
 
 $app->command('sudo-cmds', function () {
