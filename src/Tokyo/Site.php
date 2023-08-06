@@ -122,4 +122,18 @@ final class Site
                 ];
             });
     }
+
+    /**
+     * Remove all broken symbolic links.
+     */
+    public function pruneLinks(): void
+    {
+        if (!$this->fs->isDir(TOKYO_ROOT)) {
+            return;
+        }
+
+        $this->fs->ensureDirExists($this->sitesPath, user());
+
+        $this->fs->removeBrokenLinksAt($this->sitesPath);
+    }
 }

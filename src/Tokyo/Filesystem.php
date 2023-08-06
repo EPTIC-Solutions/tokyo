@@ -198,4 +198,26 @@ class Filesystem
             ->values()
             ->all();
     }
+
+    /**
+     * Remove all of the broken symbolic links at the given path.
+     */
+    public function removeBrokenLinksAt(string $path): void
+    {
+        collect($this->scandir($path))
+            ->filter(function ($file) use ($path) {
+                return $this->isBrokenLink($path . '/' . $file);
+            })
+            ->each(function ($file) use ($path) {
+                $this->rm($path . '/' . $file);
+            });
+    }
+
+    /**
+     * Determine if the given path is a broken symbolic link.
+     */
+    public function isBrokenLink(string $path): bool
+    {
+        return is_link($path) && !file_exists($path);
+    }
 }

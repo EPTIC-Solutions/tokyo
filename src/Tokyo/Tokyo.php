@@ -10,8 +10,9 @@ class Tokyo
 {
     public static Container $container;
 
-    public function __construct(private readonly System $system)
-    {
+    public function __construct(
+        private readonly System $system
+    ) {
         //
     }
 
@@ -23,6 +24,14 @@ class Tokyo
         }
 
         $this->setupManagers();
+
+        $this->onEveryRun();
+    }
+
+    private function onEveryRun()
+    {
+        resolve(Configuration::class)->prune();
+        resolve(Site::class)->pruneLinks();
     }
 
     private function setupManagers(): void

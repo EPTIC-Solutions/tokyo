@@ -84,4 +84,21 @@ class Configuration
 
         $this->write('paths', $paths);
     }
+
+    public function prune()
+    {
+        if (!$this->fs->exists($this->path)) {
+            return;
+        }
+
+        $paths = $this->read('paths');
+
+        $this->write(
+            'paths',
+            collect($paths)
+                ->filter(fn ($path) => $this->fs->isDir($path))
+                ->values()
+                ->all()
+        );
+    }
 }
