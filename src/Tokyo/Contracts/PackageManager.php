@@ -38,7 +38,7 @@ interface PackageManager
     public function uninstall(string $package): void;
 
     /**
-     * Configure package manager on valet install.
+     * Configure package manager on tokyo install.
      */
     public function setup(): void;
 

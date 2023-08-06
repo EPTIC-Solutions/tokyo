@@ -1,3 +1,3 @@
 <?php
 
-echo 'SERVER';
+include __DIR__ . '/../src/templates/index.php';

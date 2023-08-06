@@ -3,12 +3,10 @@
 use DI\Container;
 use Silly\Application;
 use Symfony\Component\Console\Helper\Table;
-use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Tokyo\Tokyo;
 
@@ -16,9 +14,9 @@ use Tokyo\Tokyo;
  * Constants
  */
 
-if (!defined('TOKYO_HOME')) {
+if (!defined('TOKYO_ROOT')) {
     if (!isTesting()) {
-        define('TOKYO_HOME', $_SERVER['HOME'] . '/.config/eptic/tokyo');
+        define('TOKYO_ROOT', $_SERVER['HOME'] . '/.config/eptic/tokyo');
     } else {
         // Handle test cases
     }
@@ -56,6 +54,11 @@ function config($key, $default = null)
 function user()
 {
     return $_SERVER['SUDO_USER'] ?? $_SERVER['USER'];
+}
+
+function group()
+{
+    return exec('id -gn ' . user());
 }
 
 function writer(OutputInterface $writer = null): OutputInterface
@@ -111,7 +114,7 @@ function warning(string $output): void
 
 function error(string $output): void
 {
-    output('<error> ' . $output . ' </error>');
+    output('<error>' . $output . '</error>');
 }
 
 /**
@@ -193,10 +196,24 @@ function should_be_sudo(): void
 
 function isInstalled(): bool
 {
-    return is_dir(TOKYO_HOME);
+    return is_dir(TOKYO_ROOT);
 }
 
 function isTesting(): bool
 {
     return strpos($_SERVER['SCRIPT_NAME'], 'phpunit') !== false;
+}
+
+function getUID(): int
+{
+    $t = tmpfile();
+    $uid = fstat($t)["uid"];
+    fclose($t);
+
+    return $uid;
+}
+
+function isDebug(): bool
+{
+    return getenv('TOKYO_DEBUG') === 'true';
 }

@@ -27,7 +27,7 @@ class Apt implements PackageManager
 
     public function packages(): Collection
     {
-        [$packagesRaw, $errorCode] = $this->cli->run('dpkg-query --list | grep ^ii | sed \'s/\s\+/ /g\'');
+        [$packagesRaw, $errorCode] = $this->cli->runAsUser('dpkg-query --list | grep ^ii | sed \'s/\s\+/ /g\'');
 
         if ($errorCode !== 0) {
             return collect();
@@ -56,7 +56,7 @@ class Apt implements PackageManager
     public function installOrFail(string $package): void
     {
         $errorCode = task("🍺 [$package] is being installed via Apt", function () use ($package) {
-            [, $errorCode] = $this->cli->run(['sudo', 'apt', 'install', '-y', $package]);
+            [, $errorCode] = $this->cli->run(['apt', 'install', '-y', $package]);
 
             return $errorCode;
         });
@@ -71,7 +71,7 @@ class Apt implements PackageManager
     public function uninstall(string $package): void
     {
         $errorCode = task("🍺 [$package] is being uninstalled via Apt", function () use ($package) {
-            [, $errorCode] = $this->cli->run(['sudo', 'apt', 'purge', '-y', $package]);
+            [, $errorCode] = $this->cli->run(['apt', 'purge', '-y', $package]);
 
             return $errorCode;
         });
@@ -94,7 +94,7 @@ class Apt implements PackageManager
 
     public function supportedPhpVersions(): Collection
     {
-        [$output, $errorCode] = $this->cli->run('apt-cache search php | grep -P "^php\d\.\d \-"');
+        [$output, $errorCode] = $this->cli->runAsUser('apt-cache search php | grep -P "^php\d\.\d \-"');
 
         if ($errorCode !== 0) {
             return collect();

@@ -30,14 +30,19 @@ class LinuxService implements ServiceManager
         $services = is_array($services) ? $services : func_get_args();
 
         foreach ($services as $service) {
-            $errorCode = task("[$service] service is being started", function () use ($service) {
-                [, $errorCode] = $this->cli->run(['sudo', 'service', $service, 'start']);
+            $error = '';
+            $errorCode = task("[$service] service is being started", function () use ($service, &$error) {
+                [$error, $errorCode] = $this->cli->run(['service', $service, 'start']);
 
                 return $errorCode;
             });
 
             if ($errorCode !== 0) {
                 error("[$service] Could not start service");
+
+                if (isDebug()) {
+                    warning($error);
+                }
 
                 exit(1);
             }
@@ -49,14 +54,19 @@ class LinuxService implements ServiceManager
         $services = is_array($services) ? $services : func_get_args();
 
         foreach ($services as $service) {
-            $errorCode = task("[$service] service is being stopped", function () use ($service) {
-                [, $errorCode] = $this->cli->run(['sudo', 'service', $service, 'stop']);
+            $error = '';
+            $errorCode = task("[$service] service is being stopped", function () use ($service, &$error) {
+                [$error, $errorCode] = $this->cli->run(['service', $service, 'stop']);
 
                 return $errorCode;
             });
 
             if ($errorCode !== 0) {
                 error("[$service] Could not stop service");
+
+                if (isDebug()) {
+                    warning($error);
+                }
 
                 exit(1);
             }
@@ -68,14 +78,19 @@ class LinuxService implements ServiceManager
         $services = is_array($services) ? $services : func_get_args();
 
         foreach ($services as $service) {
-            $errorCode = task("[$service] service is being restarted", function () use ($service) {
-                [, $errorCode] = $this->cli->run(['sudo', 'service', $service, 'restart']);
+            $error = '';
+            $errorCode = task("[$service] service is being restarted", function () use ($service, &$error) {
+                [$error, $errorCode] = $this->cli->run(['service', $service, 'restart']);
 
                 return $errorCode;
             });
 
             if ($errorCode !== 0) {
                 error("[$service] Could not restart service");
+
+                if (isDebug()) {
+                    warning($error);
+                }
 
                 exit(1);
             }
@@ -88,7 +103,7 @@ class LinuxService implements ServiceManager
 
         foreach ($services as $service) {
             $errorCode = task("[$service] service is now enabled", function () use ($service) {
-                [, $errorCode] = $this->cli->run(['sudo', 'update-rc.d', $service, 'enable']);
+                [, $errorCode] = $this->cli->run(['update-rc.d', $service, 'enable']);
 
                 return $errorCode;
             });
@@ -107,7 +122,7 @@ class LinuxService implements ServiceManager
 
         foreach ($services as $service) {
             $errorCode = task("[$service] service is now disabled", function () use ($service) {
-                [, $errorCode] = $this->cli->run(['sudo', 'update-rc.d', $service, 'disable']);
+                [, $errorCode] = $this->cli->run(['update-rc.d', $service, 'disable']);
 
                 return $errorCode;
             });

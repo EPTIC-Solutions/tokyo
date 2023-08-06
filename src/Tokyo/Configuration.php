@@ -4,7 +4,7 @@ namespace Tokyo;
 
 class Configuration
 {
-    private string $path = TOKYO_HOME . '/config.json';
+    private string $path = TOKYO_ROOT . '/config.json';
 
     public function __construct(private readonly Filesystem $fs)
     {
@@ -14,11 +14,11 @@ class Configuration
     public function install()
     {
         // Create configuration directory
-        $this->fs->ensureDirExists(TOKYO_HOME, user());
+        $this->fs->ensureDirExists(TOKYO_ROOT, user());
         // Create Sites directory
-        $this->fs->ensureDirExists(TOKYO_HOME . '/Sites', user());
+        $this->fs->ensureDirExists(TOKYO_ROOT . '/sites', user());
         // Create Logs directory
-        $this->fs->ensureDirExists(TOKYO_HOME . '/Logs', user());
+        $this->fs->ensureDirExists(TOKYO_ROOT . '/logs', user());
 
         $this->writeConfiguration();
     }
@@ -26,19 +26,29 @@ class Configuration
     public function writeConfiguration()
     {
         if (!$this->fs->exists($this->path)) {
-            $this->fs->put($this->path, $this->fs->get(__DIR__ . '/../stubs/config.json'));
+            $this->fs->putAsUser($this->path, $this->fs->get(__DIR__ . '/../stubs/config.json'));
         }
     }
 
     public function uninstall()
     {
-        $this->fs->rm(TOKYO_HOME);
+        $this->fs->rm(TOKYO_ROOT);
     }
 
-    public function read(string $key): mixed
+    public function read(string $key, mixed $default = null): mixed
     {
+        $explode = explode('.', $key);
+
         $config = json_decode($this->fs->get($this->path), true);
 
-        return $config[$key] ?? null;
+        foreach ($explode as $key) {
+            if (!isset($config[$key])) {
+                return $default;
+            }
+
+            $config = $config[$key];
+        }
+
+        return $config;
     }
 }

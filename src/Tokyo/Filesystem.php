@@ -6,6 +6,11 @@ use FilesystemIterator;
 
 class Filesystem
 {
+    public function __construct(private readonly CommandLine $cli)
+    {
+        //
+    }
+
     /**
      * Determine if the given path is a directory.
      */
@@ -26,13 +31,46 @@ class Filesystem
         }
     }
 
+    /**
+     * Create a symlink to the given target.
+     *
+     * @param string $target
+     * @param string $link
+     * @return void
+     */
+    public function symlink($target, $link)
+    {
+        if ($this->exists($link)) {
+            $this->rm($link);
+        }
+
+        symlink($target, $link);
+    }
+
+    /**
+     * Create a symlink to the given target for the non-root user.
+     *
+     * This uses the command line as PHP can't change symlink permissions.
+     *
+     * @param string $target
+     * @param string $link
+     * @return void
+     */
+    public function symlinkAsUser($target, $link)
+    {
+        if (is_link($link)) {
+            $this->rm($link);
+        }
+
+        $this->cli->runAsUser(['ln', '-s', $target, $link]);
+    }
+
     public function rm(array|string $files): void
     {
         $files = is_array($files) ? $files : func_get_args();
 
         foreach ($files as $file) {
             if (!file_exists($file) && !is_link($file)) {
-                dump($file);
                 continue;
             }
 
@@ -59,9 +97,20 @@ class Filesystem
         return file_exists($file);
     }
 
-    public function put(string $path, string $contents): void
+    public function put(string $path, string $contents, ?string $owner = null): bool
     {
-        file_put_contents($path, $contents);
+        $return = file_put_contents($path, $contents);
+
+        if ($owner) {
+            $this->chown($path, $owner);
+        }
+
+        return boolval($return);
+    }
+
+    public function putAsUser(string $path, string $contents, ?string $owner = null): bool
+    {
+        return $this->put($path, $contents, user());
     }
 
     public function get(string $path): string
@@ -90,5 +139,45 @@ class Filesystem
     public function chown(string $path, string $user): void
     {
         chown($path, $user);
+    }
+
+    /**
+     * Backup the given file.
+     *
+     * @param string $file
+     * @return bool
+     */
+    public function backup($file)
+    {
+        $to = $file . '.bak';
+
+        if (!$this->exists($to)) {
+            if ($this->exists($file)) {
+                [, $errorCode] = $this->cli->run(['sudo', 'mv', $file, $to]);
+
+                return $errorCode === 0;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Restore a backed up file.
+     *
+     * @param string $file
+     * @return bool
+     */
+    public function restore($file)
+    {
+        $from = $file . '.bak';
+
+        if ($this->exists($from)) {
+            [, $errorCode] = $this->cli->run(['sudo', 'mv', $from, $file]);
+
+            return $errorCode === 0;
+        }
+
+        return false;
     }
 }

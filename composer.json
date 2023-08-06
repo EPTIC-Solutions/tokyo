@@ -11,7 +11,8 @@
     "symfony/var-dumper": "^6.3",
     "symfony/event-dispatcher": "^6.3",
     "symfony/process": "^6.3",
-    "php-di/php-di": "^7.0"
+    "php-di/php-di": "^7.0",
+    "psy/psysh": "^0.11.20"
   },
   "autoload": {
     "psr-4": {

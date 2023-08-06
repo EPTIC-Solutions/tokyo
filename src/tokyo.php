@@ -1,12 +1,14 @@
 <?php
 
+use Psy\Shell;
 use Silly\Application;
 use Tokyo\CommandLine;
 use Tokyo\Configuration;
 use Tokyo\Contracts\PackageManager;
 use Tokyo\Contracts\ServiceManager;
+use Tokyo\Services\Nginx;
+use Tokyo\Services\Php;
 use Tokyo\Tokyo;
-
 
 $app = new Application(config('app.name'), config('app.version'));
 
@@ -14,19 +16,18 @@ resolve(Tokyo::class)->setup();
 
 if (!isInstalled()) {
     $app->command('install', function (CommandLine $cli, Configuration $conf, PackageManager $pm, ServiceManager $sm) {
-        $cli->promptSudoPassword();
+        $cli->ensureSudo();
 
         output("Installing Tokyo...\n");
 
-        // Install all packages
-        $pm->ensureInstalled('nginx');
-        $pm->ensureInstalled('dnsmasq');
-
-        // Start all services
-        $sm->start('nginx');
-
         // Install all configuration
         $conf->install();
+
+        resolve(Nginx::class)->install();
+        resolve(Php::class)->install();
+
+        // Install all packages
+        // $pm->ensureInstalled('dnsmasq');
 
         output("\nTokyo is now installed");
     });
@@ -37,22 +38,32 @@ if (!isInstalled()) {
             return;
         }
 
-        $cli->promptSudoPassword();
+        $cli->ensureSudo();
 
         output("Removing Tokyo... 🥺\n");
 
-        // Stop all services
-        $sm->stop('nginx');
+        resolve(Nginx::class)->uninstall();
+        resolve(Php::class)->uninstall();
 
-        // Uninstall all packages
-        $pm->uninstall('nginx');
-        $pm->uninstall('dnsmasq');
-
-        // Remove all configuration
         $conf->uninstall();
 
         output("\nTokyo has been removed");
     });
 }
+
+$app->command('sudo-cmds', function () {
+    $sudoCommands = [
+        'install',
+        'uninstall',
+    ];
+
+    writer()->write(implode(" ", $sudoCommands));
+})->setHidden(true);
+
+$app->command('tinker', function () {
+    $shell = new Shell();
+
+    $shell->run();
+});
 
 return $app;

@@ -1,16 +1,29 @@
-#!/usr/bin/env php
-<?php
+#!/usr/bin/env bash
 
-define('TOKYO_START', microtime(true));
+SOURCE="${BASH_SOURCE[0]}"
+HOMEPATH=$HOME
 
-if (file_exists(__DIR__ . '/vendor/autoload.php')) {
-    require_once __DIR__ . '/vendor/autoload.php';
-} elseif (file_exists(__DIR__ . '/../../autoload.php')) {
-    require_once __DIR__ . '/../../autoload.php';
-} else {
-    require_once getenv('HOME') . '/.composer/vendor/autoload.php';
-}
+if [[ -L $SOURCE ]]
+then
+    DIR=$(php -r "echo dirname(realpath('$SOURCE'));")
+else
+    DIR="$( cd "$( dirname "$SOURCE" )" && pwd )"
+fi
 
-$app = require_once __DIR__ . '/bootstrap/app.php';
+if [[ ! -f "$DIR/bootstrap/app.php" ]]
+then
+    DIR=$(php -r "echo realpath('$DIR/../eptic/tokyo');")
+fi
 
-$app->run();
+SUDOCMDS=$(php "$DIR/bootstrap/app.php" "sudo-cmds")
+
+if [[ -n $1 && $SUDOCMDS =~ $1 ]]
+then
+    if [[ "$EUID" -ne 0 ]]
+    then
+        sudo env TOKYO_DEBUG=$TOKYO_DEBUG HOME=$HOMEPATH $SOURCE "$@"
+        exit 0
+    fi
+fi
+
+php "$DIR/bootstrap/app.php" "$@"

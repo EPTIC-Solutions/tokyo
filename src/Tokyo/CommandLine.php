@@ -40,10 +40,15 @@ class CommandLine
     }
 
     /**
-     * Make sure the user will not be asked for the sudo password in random moments.
+     * Make sure that the current user is sudo.
+     * This is required for certain commands that work with the system files.
      */
-    public function promptSudoPassword(): void
+    public function ensureSudo(): void
     {
-        $this->runCommand(['sudo', '-v']);
+        if (getUID() !== 0) {
+            error('This command requires Tokyo to be run as sudo!');
+
+            exit(1);
+        }
     }
 }

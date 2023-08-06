@@ -57,9 +57,11 @@ class Systemd implements ServiceManager
 
     public function getRunningServices(): Collection
     {
+        return collect();
     }
 
     public function getAllRunningServices(): Collection
     {
+        return collect();
     }
 }

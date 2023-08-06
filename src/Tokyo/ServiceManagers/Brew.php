@@ -46,9 +46,9 @@ class Brew implements ServiceManager
         foreach ($services as $service) {
             task("[$service] service is being stopped", function () use ($service) {
                 // Stop service as user if accidentally started as not root
-                $this->cli->run(['brew', 'services', 'stop', $service]);
+                $this->cli->runAsUser(['brew', 'services', 'stop', $service]);
 
-                $this->cli->run(['sudo', 'brew', 'services', 'kill', $service]);
+                $this->cli->run(['brew', 'services', 'kill', $service]);
             });
         }
     }
@@ -64,9 +64,9 @@ class Brew implements ServiceManager
         foreach ($services as $service) {
             task("[$service] service is now enabled", function () use ($service) {
                 // Stop service is started as user and not root
-                $this->cli->run(['brew', 'services', 'stop', $service]);
+                $this->cli->runAsUser(['brew', 'services', 'stop', $service]);
 
-                $this->cli->run(['sudo', 'brew', 'services', 'start', $service]);
+                $this->cli->run(['brew', 'services', 'start', $service]);
             });
         }
     }
@@ -78,9 +78,9 @@ class Brew implements ServiceManager
         foreach ($services as $service) {
             task("[$service] service is now disabled", function () use ($service) {
                 // Stop service is started as user and not root
-                $this->cli->run(['brew', 'services', 'stop', $service]);
+                $this->cli->runAsUser(['brew', 'services', 'stop', $service]);
 
-                $this->cli->run(['sudo', 'brew', 'services', 'stop', $service]);
+                $this->cli->run(['brew', 'services', 'stop', $service]);
             });
         }
     }

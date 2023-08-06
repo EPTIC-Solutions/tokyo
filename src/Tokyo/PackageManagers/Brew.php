@@ -25,7 +25,7 @@ class Brew implements PackageManager
     public function __construct(private readonly CommandLine $cli)
     {
         if (!resolve('BREW_PREFIX')) {
-            container()->set('BREW_PREFIX', trim($this->cli->run(['brew', '--prefix'])[0]));
+            container()->set('BREW_PREFIX', trim($this->cli->runAsUser(['brew', '--prefix'])[0]));
         }
 
         $this->BREW_PREFIX = resolve('BREW_PREFIX');
@@ -33,7 +33,7 @@ class Brew implements PackageManager
 
     public function packages(): Collection
     {
-        [$output, $errorCode] = $this->cli->run(['brew', 'list']);
+        [$output, $errorCode] = $this->cli->runAsUser(['brew', 'list']);
 
         if ($errorCode !== 0) {
             return collect();
@@ -62,7 +62,7 @@ class Brew implements PackageManager
     public function installOrFail(string $package): void
     {
         $errorCode = task("🍺 [$package] is being installed via Brew", function () use ($package) {
-            [, $errorCode] = $this->cli->run(['brew', 'install', $package]);
+            [, $errorCode] = $this->cli->runAsUser(['brew', 'install', $package]);
 
             return $errorCode;
         });
@@ -78,9 +78,9 @@ class Brew implements PackageManager
     {
         if ($this->installed($package)) {
             task("🍺 [$package] is being uninstalled via Brew", function () use ($package) {
-                $this->cli->run(['brew', 'uninstall', '--force', $package]);
+                $this->cli->runAsUser(['brew', 'uninstall', '--force', $package]);
 
-                $this->cli->run(['sudo', 'rm', '-rf', "$this->BREW_PREFIX/Cellar/$package"]);
+                $this->cli->run(['rm', '-rf', "$this->BREW_PREFIX/Cellar/$package"]);
             });
         }
     }
@@ -96,5 +96,6 @@ class Brew implements PackageManager
 
     public function supportedPhpVersions(): Collection
     {
+        return collect();
     }
 }
