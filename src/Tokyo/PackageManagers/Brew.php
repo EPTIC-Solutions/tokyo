@@ -61,15 +61,17 @@ class Brew implements PackageManager
 
     public function installOrFail(string $package): void
     {
-        task("🍺 [$package] is being installed via Brew", function () use ($package) {
+        $errorCode = task("🍺 [$package] is being installed via Brew", function () use ($package) {
             [, $errorCode] = $this->cli->run(['brew', 'install', $package]);
 
-            if ($errorCode !== 0) {
-                error("Could not install [$package] via Brew");
-
-                exit(1);
-            }
+            return $errorCode;
         });
+
+        if ($errorCode !== 0) {
+            error("Could not install [$package] via Brew");
+
+            exit(1);
+        }
     }
 
     public function uninstall(string $package): void

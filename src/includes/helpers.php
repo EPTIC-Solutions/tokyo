@@ -132,9 +132,12 @@ function task(string $title, ?Closure $task = null, string $loadingText = '...')
     $writer->write("$title: <comment>{$loadingText}</comment>");
 
     if ($task === null) {
-        $result = true;
+        $errorCode = 0;
     } else {
-        $result = $task() === false ? false : true;
+        $errorCode = $task();
+        if ($errorCode === null) {
+            $errorCode = 0;
+        }
     }
 
     if ($writer->isDecorated()) { // Determines if we can use escape sequences
@@ -147,9 +150,9 @@ function task(string $title, ?Closure $task = null, string $loadingText = '...')
         output(''); // Make sure we first close the previous line
     }
 
-    output("$title: " . ($result ? '<info>✔</info>' : '<error>failed</error>'));
+    output("$title: " . (($errorCode === 0) ? '<info>✔</info>' : '<error>failed</error>'));
 
-    return $result;
+    return $errorCode;
 }
 
 /**

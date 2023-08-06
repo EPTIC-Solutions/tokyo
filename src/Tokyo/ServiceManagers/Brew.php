@@ -34,13 +34,7 @@ class Brew implements ServiceManager
                 // Stop service is started as user and not root
                 $this->cli->run(['brew', 'services', 'stop', $service]);
 
-                [, $errorCode] = $this->cli->run(['sudo', 'brew', 'services', 'start', $service]);
-
-                if ($errorCode !== 0) {
-                    error("[$service] Could not start service");
-
-                    exit(1);
-                }
+                $this->cli->run(['sudo', 'brew', 'services', 'start', $service]);
             });
         }
     }
@@ -54,13 +48,7 @@ class Brew implements ServiceManager
                 // Stop service as user if accidentally started as not root
                 $this->cli->run(['brew', 'services', 'stop', $service]);
 
-                [, $errorCode] = $this->cli->run(['sudo', 'brew', 'services', 'stop', $service]);
-
-                if ($errorCode !== 0) {
-                    error("[$service] Could not stop service");
-
-                    exit(1);
-                }
+                $this->cli->run(['sudo', 'brew', 'services', 'stop', $service]);
             });
         }
     }

@@ -30,15 +30,17 @@ class LinuxService implements ServiceManager
         $services = is_array($services) ? $services : func_get_args();
 
         foreach ($services as $service) {
-            task("[$service] service is being started", function () use ($service) {
+            $errorCode = task("[$service] service is being started", function () use ($service) {
                 [, $errorCode] = $this->cli->run(['sudo', 'service', $service, 'start']);
 
-                if ($errorCode !== 0) {
-                    error("[$service] Could not start service");
-
-                    exit(1);
-                }
+                return $errorCode;
             });
+
+            if ($errorCode !== 0) {
+                error("[$service] Could not start service");
+
+                exit(1);
+            }
         };
     }
 
@@ -47,15 +49,17 @@ class LinuxService implements ServiceManager
         $services = is_array($services) ? $services : func_get_args();
 
         foreach ($services as $service) {
-            task("[$service] service is being stopped", function () use ($service) {
+            $errorCode = task("[$service] service is being stopped", function () use ($service) {
                 [, $errorCode] = $this->cli->run(['sudo', 'service', $service, 'stop']);
 
-                if ($errorCode !== 0) {
-                    error("[$service] Could not stop service");
-
-                    exit(1);
-                }
+                return $errorCode;
             });
+
+            if ($errorCode !== 0) {
+                error("[$service] Could not stop service");
+
+                exit(1);
+            }
         };
     }
 
@@ -64,15 +68,17 @@ class LinuxService implements ServiceManager
         $services = is_array($services) ? $services : func_get_args();
 
         foreach ($services as $service) {
-            task("[$service] service is being restarted", function () use ($service) {
+            $errorCode = task("[$service] service is being restarted", function () use ($service) {
                 [, $errorCode] = $this->cli->run(['sudo', 'service', $service, 'restart']);
 
-                if ($errorCode !== 0) {
-                    error("[$service] Could not restart service");
-
-                    exit(1);
-                }
+                return $errorCode;
             });
+
+            if ($errorCode !== 0) {
+                error("[$service] Could not restart service");
+
+                exit(1);
+            }
         };
     }
 

@@ -55,28 +55,32 @@ class Apt implements PackageManager
 
     public function installOrFail(string $package): void
     {
-        task("🍺 [$package] is being installed via Apt", function () use ($package) {
+        $errorCode = task("🍺 [$package] is being installed via Apt", function () use ($package) {
             [, $errorCode] = $this->cli->run(['sudo', 'apt', 'install', '-y', $package]);
 
-            if ($errorCode !== 0) {
-                error("Could not install [$package] via Apt");
-
-                exit(1);
-            }
+            return $errorCode;
         });
+
+        if ($errorCode !== 0) {
+            error("Could not install [$package] via Apt");
+
+            exit(1);
+        }
     }
 
     public function uninstall(string $package): void
     {
-        task("🍺 [$package] is being uninstalled via Apt", function () use ($package) {
+        $errorCode = task("🍺 [$package] is being uninstalled via Apt", function () use ($package) {
             [, $errorCode] = $this->cli->run(['sudo', 'apt', 'purge', '-y', $package]);
 
-            if ($errorCode !== 0) {
-                error("Could not uninstall [$package] via Apt");
-
-                exit(1);
-            }
+            return $errorCode;
         });
+
+        if ($errorCode !== 0) {
+            error("Could not uninstall [$package] via Apt");
+
+            exit(1);
+        }
     }
 
     public function setup(): void
