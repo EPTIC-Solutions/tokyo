@@ -28,6 +28,16 @@ interface ServiceManager
     public function restart(array|string $services);
 
     /**
+     * Make the services start on boot.
+     */
+    public function enable(array|string $services);
+
+    /**
+     * Stop the services from starting on boot.
+     */
+    public function disable(array|string $services);
+
+    /**
      * Check the status of the services.
      */
     public function status(array|string $services): bool;

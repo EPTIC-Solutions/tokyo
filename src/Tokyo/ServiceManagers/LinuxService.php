@@ -82,6 +82,44 @@ class LinuxService implements ServiceManager
         };
     }
 
+    public function enable(array|string $services): void
+    {
+        $services = is_array($services) ? $services : func_get_args();
+
+        foreach ($services as $service) {
+            $errorCode = task("[$service] service is now enabled", function () use ($service) {
+                [, $errorCode] = $this->cli->run(['sudo', 'update-rc.d', $service, 'enable']);
+
+                return $errorCode;
+            });
+
+            if ($errorCode !== 0) {
+                error("[$service] Could not enable service");
+
+                exit(1);
+            }
+        };
+    }
+
+    public function disable(array|string $services): void
+    {
+        $services = is_array($services) ? $services : func_get_args();
+
+        foreach ($services as $service) {
+            $errorCode = task("[$service] service is now disabled", function () use ($service) {
+                [, $errorCode] = $this->cli->run(['sudo', 'update-rc.d', $service, 'disable']);
+
+                return $errorCode;
+            });
+
+            if ($errorCode !== 0) {
+                error("[$service] Could not disable service");
+
+                exit(1);
+            }
+        };
+    }
+
     public function status(array|string $services): bool
     {
         return true;
@@ -94,9 +132,11 @@ class LinuxService implements ServiceManager
 
     public function getRunningServices(): Collection
     {
+        return collect();
     }
 
     public function getAllRunningServices(): Collection
     {
+        return collect();
     }
 }

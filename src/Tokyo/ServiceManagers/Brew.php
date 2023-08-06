@@ -34,7 +34,7 @@ class Brew implements ServiceManager
                 // Stop service is started as user and not root
                 $this->cli->run(['brew', 'services', 'stop', $service]);
 
-                $this->cli->run(['sudo', 'brew', 'services', 'start', $service]);
+                $this->cli->run(['sudo', 'brew', 'services', 'run', $service]);
             });
         }
     }
@@ -48,13 +48,41 @@ class Brew implements ServiceManager
                 // Stop service as user if accidentally started as not root
                 $this->cli->run(['brew', 'services', 'stop', $service]);
 
-                $this->cli->run(['sudo', 'brew', 'services', 'stop', $service]);
+                $this->cli->run(['sudo', 'brew', 'services', 'kill', $service]);
             });
         }
     }
 
     public function restart(array|string $services): void
     {
+    }
+
+    public function enable(array|string $services): void
+    {
+        $services = is_array($services) ? $services : func_get_args();
+
+        foreach ($services as $service) {
+            task("[$service] service is now enabled", function () use ($service) {
+                // Stop service is started as user and not root
+                $this->cli->run(['brew', 'services', 'stop', $service]);
+
+                $this->cli->run(['sudo', 'brew', 'services', 'start', $service]);
+            });
+        }
+    }
+
+    public function disable(array|string $services): void
+    {
+        $services = is_array($services) ? $services : func_get_args();
+
+        foreach ($services as $service) {
+            task("[$service] service is now disabled", function () use ($service) {
+                // Stop service is started as user and not root
+                $this->cli->run(['brew', 'services', 'stop', $service]);
+
+                $this->cli->run(['sudo', 'brew', 'services', 'stop', $service]);
+            });
+        }
     }
 
     public function status(array|string $services): bool
@@ -69,9 +97,11 @@ class Brew implements ServiceManager
 
     public function getRunningServices(): Collection
     {
+        return collect();
     }
 
     public function getAllRunningServices(): Collection
     {
+        return collect();
     }
 }
