@@ -3,7 +3,7 @@
   "name": "eptic/tokyo",
   "description": "Local php development for linux artisans.",
   "type": "library",
-  "license": "GNU GPLv3",
+  "license": "GPL-3.0",
   "require": {
     "mnapoli/silly": "^1.8",
     "php": ">=8.1",
