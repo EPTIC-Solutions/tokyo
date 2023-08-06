@@ -4,7 +4,7 @@ namespace Tokyo;
 
 class Configuration
 {
-    private string $path = TOKYO_ROOT . '/config.json';
+    private string $path = TOKYO_ROOT.'/config.json';
 
     public function __construct(private readonly Filesystem $fs)
     {
@@ -16,17 +16,17 @@ class Configuration
         // Create configuration directory
         $this->fs->ensureDirExists(TOKYO_ROOT, user());
         // Create Sites directory
-        $this->fs->ensureDirExists(TOKYO_ROOT . '/sites', user());
+        $this->fs->ensureDirExists(TOKYO_ROOT.'/sites', user());
         // Create Logs directory
-        $this->fs->ensureDirExists(TOKYO_ROOT . '/logs', user());
+        $this->fs->ensureDirExists(TOKYO_ROOT.'/logs', user());
 
         $this->writeConfiguration();
     }
 
     public function writeConfiguration()
     {
-        if (!$this->fs->exists($this->path)) {
-            $this->fs->putAsUser($this->path, $this->fs->get(__DIR__ . '/../stubs/config.json'));
+        if (! $this->fs->exists($this->path)) {
+            $this->fs->putAsUser($this->path, $this->fs->get(__DIR__.'/../stubs/config.json'));
         }
     }
 
@@ -42,7 +42,7 @@ class Configuration
         $config = json_decode($this->fs->get($this->path), true);
 
         foreach ($explode as $key) {
-            if (!isset($config[$key])) {
+            if (! isset($config[$key])) {
                 return $default;
             }
 

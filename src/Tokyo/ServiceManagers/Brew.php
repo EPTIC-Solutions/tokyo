@@ -16,7 +16,7 @@ class Brew implements ServiceManager
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function supportedOperatingSystems(): array
     {

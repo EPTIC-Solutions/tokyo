@@ -1,3 +1,3 @@
 <?php
 
-include __DIR__ . '/../src/templates/index.php';
+include __DIR__.'/../src/templates/index.php';

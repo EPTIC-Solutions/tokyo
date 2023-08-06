@@ -8,6 +8,7 @@ interface PackageManager
 {
     /**
      * The supported operating systems.
+     *
      * @var array<int, \Tokyo\OperatingSystem>
      */
     public function supportedOperatingSystems(): array;

@@ -6,7 +6,6 @@ use Symfony\Component\Process\Process;
 
 class CommandLine
 {
-
     /**
      * Run the given command as the non-root user.
      */

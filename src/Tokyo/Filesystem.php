@@ -34,8 +34,8 @@ class Filesystem
     /**
      * Create a symlink to the given target.
      *
-     * @param string $target
-     * @param string $link
+     * @param  string  $target
+     * @param  string  $link
      * @return void
      */
     public function symlink($target, $link)
@@ -52,8 +52,8 @@ class Filesystem
      *
      * This uses the command line as PHP can't change symlink permissions.
      *
-     * @param string $target
-     * @param string $link
+     * @param  string  $target
+     * @param  string  $link
      * @return void
      */
     public function symlinkAsUser($target, $link)
@@ -70,20 +70,20 @@ class Filesystem
         $files = is_array($files) ? $files : func_get_args();
 
         foreach ($files as $file) {
-            if (!file_exists($file) && !is_link($file)) {
+            if (! file_exists($file) && ! is_link($file)) {
                 continue;
             }
 
             if ($this->isDir($file)) {
                 $this->rm(iterator_to_array(new FilesystemIterator($file)));
 
-                if (!@rmdir($file)) {
+                if (! @rmdir($file)) {
                     error("Could not delete directory: $file");
 
                     exit(1);
                 }
             } else {
-                if (!@unlink($file)) {
+                if (! @unlink($file)) {
                     error("Could not delete file: $file");
 
                     exit(1);
@@ -97,7 +97,7 @@ class Filesystem
         return file_exists($file);
     }
 
-    public function put(string $path, string $contents, ?string $owner = null): bool
+    public function put(string $path, string $contents, string $owner = null): bool
     {
         $return = file_put_contents($path, $contents);
 
@@ -108,18 +108,19 @@ class Filesystem
         return boolval($return);
     }
 
-    public function putAsUser(string $path, string $contents, ?string $owner = null): bool
+    public function putAsUser(string $path, string $contents, string $owner = null): bool
     {
         return $this->put($path, $contents, user());
     }
 
     public function get(string $path): string
     {
-        if (!$this->exists($path)) {
+        if (! $this->exists($path)) {
             error("File does not exist: $path");
 
             exit(1);
         }
+
         return file_get_contents($path);
     }
 
@@ -128,7 +129,7 @@ class Filesystem
      */
     public function ensureDirExists(string $path, string $owner = null, int $mode = 0755): void
     {
-        if (!$this->isDir($path)) {
+        if (! $this->isDir($path)) {
             $this->mkdir($path, $owner, $mode);
         }
     }
@@ -144,14 +145,14 @@ class Filesystem
     /**
      * Backup the given file.
      *
-     * @param string $file
+     * @param  string  $file
      * @return bool
      */
     public function backup($file)
     {
-        $to = $file . '.bak';
+        $to = $file.'.bak';
 
-        if (!$this->exists($to)) {
+        if (! $this->exists($to)) {
             if ($this->exists($file)) {
                 [, $errorCode] = $this->cli->run(['sudo', 'mv', $file, $to]);
 
@@ -165,12 +166,12 @@ class Filesystem
     /**
      * Restore a backed up file.
      *
-     * @param string $file
+     * @param  string  $file
      * @return bool
      */
     public function restore($file)
     {
-        $from = $file . '.bak';
+        $from = $file.'.bak';
 
         if ($this->exists($from)) {
             [, $errorCode] = $this->cli->run(['sudo', 'mv', $from, $file]);

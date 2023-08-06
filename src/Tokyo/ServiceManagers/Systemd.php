@@ -16,7 +16,7 @@ class Systemd implements ServiceManager
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function supportedOperatingSystems(): array
     {

@@ -1,4 +1,5 @@
 {
+  "$schema": "https://getcomposer.org/schema.json",
   "name": "eptic/tokyo",
   "description": "Local php development for linux artisans.",
   "type": "library",
@@ -27,7 +28,15 @@
       "name": "Cristian Bilu"
     }
   ],
+  "scripts": {
+    "pint": [
+      "./vendor/bin/pint"
+    ]
+  },
   "bin": [
     "tokyo"
-  ]
+  ],
+  "require-dev": {
+    "laravel/pint": "^1.10"
+  }
 }

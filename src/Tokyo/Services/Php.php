@@ -23,7 +23,7 @@ class Php implements Service
 
     public function getServiceName(): string
     {
-        return 'php' . $this->getPhpVersion() . '-fpm';
+        return 'php'.$this->getPhpVersion().'-fpm';
     }
 
     public function install(): void
@@ -42,11 +42,11 @@ class Php implements Service
 
     private function installConfiguration()
     {
-        $contents = $this->fs->get(__DIR__ . '/../../stubs/tokyo-fpm.conf');
+        $contents = $this->fs->get(__DIR__.'/../../stubs/tokyo-fpm.conf');
         $phpVersion = $this->getPhpVersion();
 
         $this->fs->putAsUser(
-            $this->fpmConfigPath() . '/tokyo.conf',
+            $this->fpmConfigPath().'/tokyo.conf',
             str_replace([
                 'TOKYO_USER',
                 'TOKYO_GROUP',
@@ -54,7 +54,7 @@ class Php implements Service
             ], [
                 user(),
                 group(),
-                TOKYO_ROOT . '/' . $this->getSockName($phpVersion),
+                TOKYO_ROOT.'/'.$this->getSockName($phpVersion),
             ], $contents)
         );
     }
@@ -62,16 +62,16 @@ class Php implements Service
     /**
      * Symlink the given php version's fpm socket file to be the primary tokyo.sock for nginx.
      *
-     * @param string $phpVersion
+     * @param  string  $phpVersion
      * @return void
      */
     public function symlinkPrimarySock($phpVersion = null)
     {
-        if (!$phpVersion) {
+        if (! $phpVersion) {
             $phpVersion = $this->getPhpVersion();
         }
 
-        $this->fs->symlinkAsUser(TOKYO_ROOT . '/' . $this->getSockName($phpVersion), TOKYO_ROOT . '/tokyo.sock');
+        $this->fs->symlinkAsUser(TOKYO_ROOT.'/'.$this->getSockName($phpVersion), TOKYO_ROOT.'/tokyo.sock');
     }
 
     /**
@@ -84,9 +84,9 @@ class Php implements Service
         $phpVersion = $phpVersion ?: $this->getPhpVersion();
 
         $path = collect([
-            '/etc/php/' . $phpVersion . '/fpm/pool.d', // Ubuntu
-            '/etc/php' . $phpVersion . '/fpm/pool.d', // Ubuntu
-            '/etc/php' . $phpVersion . '/php-fpm.d', // Manjaro
+            '/etc/php/'.$phpVersion.'/fpm/pool.d', // Ubuntu
+            '/etc/php'.$phpVersion.'/fpm/pool.d', // Ubuntu
+            '/etc/php'.$phpVersion.'/php-fpm.d', // Manjaro
             '/etc/php-fpm.d', // Fedora
             '/etc/php/php-fpm.d', // Arch
             '/etc/php7/fpm/php-fpm.d', // openSUSE PHP7
@@ -104,17 +104,17 @@ class Php implements Service
 
     private function getSockName($version): string
     {
-        return 'tokyof' . $version . '.sock';
+        return 'tokyof'.$version.'.sock';
     }
 
     private function getPhpVersion(): string
     {
-        return PHP_MAJOR_VERSION . '.' . PHP_MINOR_VERSION;
+        return PHP_MAJOR_VERSION.'.'.PHP_MINOR_VERSION;
     }
 
     public function uninstall(): void
     {
-        $this->fs->rm($this->fpmConfigPath() . '/tokyo.conf');
+        $this->fs->rm($this->fpmConfigPath().'/tokyo.conf');
 
         $serviceName = $this->getServiceName();
         $this->sm->disable($serviceName);

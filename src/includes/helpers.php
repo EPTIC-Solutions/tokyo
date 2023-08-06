@@ -13,16 +13,15 @@ use Tokyo\Tokyo;
 /**
  * Constants
  */
-
-if (!defined('TOKYO_ROOT')) {
-    if (!isTesting()) {
-        define('TOKYO_ROOT', $_SERVER['HOME'] . '/.config/eptic/tokyo');
+if (! defined('TOKYO_ROOT')) {
+    if (! isTesting()) {
+        define('TOKYO_ROOT', $_SERVER['HOME'].'/.config/eptic/tokyo');
     } else {
         // Handle test cases
     }
 }
 
-define('TOKYO_SERVER', realpath(__DIR__ . '/../../server/server.php'));
+define('TOKYO_SERVER', realpath(__DIR__.'/../../server/server.php'));
 
 function container(): Container
 {
@@ -41,7 +40,7 @@ function config($key, $default = null)
     $config = resolve('config');
 
     foreach ($explode as $key) {
-        if (!isset($config[$key])) {
+        if (! isset($config[$key])) {
             return $default;
         }
 
@@ -58,15 +57,15 @@ function user()
 
 function group()
 {
-    return exec('id -gn ' . user());
+    return exec('id -gn '.user());
 }
 
 function writer(OutputInterface $writer = null): OutputInterface
 {
     $container = container();
 
-    if (!$writer) {
-        if (!$container->has('writer')) {
+    if (! $writer) {
+        if (! $container->has('writer')) {
             $container->set('writer', new ConsoleOutput());
         }
 
@@ -82,8 +81,8 @@ function reader(InputInterface $reader = null): InputInterface
 {
     $container = container();
 
-    if (!$reader) {
-        if (!$container->has('reader')) {
+    if (! $reader) {
+        if (! $container->has('reader')) {
             $container->set('reader', new ArgvInput());
         }
 
@@ -95,7 +94,7 @@ function reader(InputInterface $reader = null): InputInterface
     return $reader;
 }
 
-function ask(string $question, ?string $default = null, ?callable $validator = null)
+function ask(string $question, string $default = null, callable $validator = null)
 {
     $io = new SymfonyStyle(reader(), writer());
 
@@ -104,17 +103,17 @@ function ask(string $question, ?string $default = null, ?callable $validator = n
 
 function info($output): void
 {
-    output('<info>' . $output . '</info>');
+    output('<info>'.$output.'</info>');
 }
 
 function warning(string $output): void
 {
-    output('<fg=yellow>' . $output . '</>');
+    output('<fg=yellow>'.$output.'</>');
 }
 
 function error(string $output): void
 {
-    output('<error>' . $output . '</error>');
+    output('<error>'.$output.'</error>');
 }
 
 /**
@@ -129,7 +128,7 @@ function table(array $headers = [], array $rows = []): void
     $table->render();
 }
 
-function task(string $title, ?Closure $task = null, string $loadingText = '...')
+function task(string $title, Closure $task = null, string $loadingText = '...')
 {
     $writer = writer();
     $writer->write("$title: <comment>{$loadingText}</comment>");
@@ -153,7 +152,7 @@ function task(string $title, ?Closure $task = null, string $loadingText = '...')
         output(''); // Make sure we first close the previous line
     }
 
-    output("$title: " . (($errorCode === 0) ? '<info>✔</info>' : '<error>failed</error>'));
+    output("$title: ".(($errorCode === 0) ? '<info>✔</info>' : '<error>failed</error>'));
 
     return $errorCode;
 }
@@ -187,7 +186,7 @@ function resolve(string $class, array $parameters = []): mixed
  */
 function should_be_sudo(): void
 {
-    if (!isset($_SERVER['SUDO_USER'])) {
+    if (! isset($_SERVER['SUDO_USER'])) {
         error('This command must be run as sudo.');
 
         exit(1);
@@ -207,7 +206,7 @@ function isTesting(): bool
 function getUID(): int
 {
     $t = tmpfile();
-    $uid = fstat($t)["uid"];
+    $uid = fstat($t)['uid'];
     fclose($t);
 
     return $uid;

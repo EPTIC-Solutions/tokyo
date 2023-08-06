@@ -16,7 +16,7 @@ class LinuxService implements ServiceManager
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function supportedOperatingSystems(): array
     {
@@ -46,7 +46,7 @@ class LinuxService implements ServiceManager
 
                 exit(1);
             }
-        };
+        }
     }
 
     public function stop(array|string $services): void
@@ -70,7 +70,7 @@ class LinuxService implements ServiceManager
 
                 exit(1);
             }
-        };
+        }
     }
 
     public function restart(array|string $services): void
@@ -94,7 +94,7 @@ class LinuxService implements ServiceManager
 
                 exit(1);
             }
-        };
+        }
     }
 
     public function enable(array|string $services): void
@@ -113,7 +113,7 @@ class LinuxService implements ServiceManager
 
                 exit(1);
             }
-        };
+        }
     }
 
     public function disable(array|string $services): void
@@ -132,7 +132,7 @@ class LinuxService implements ServiceManager
 
                 exit(1);
             }
-        };
+        }
     }
 
     public function status(array|string $services): bool

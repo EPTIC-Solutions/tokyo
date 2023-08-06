@@ -13,7 +13,9 @@ use Tokyo\PackageManagers\Brew;
 class Nginx implements Service
 {
     private const NGINX_CONF = '/etc/nginx/nginx.conf';
+
     private const TOKYO_CONF = '/etc/nginx/sites-available/tokyo.conf';
+
     private const TOKYO_CONF_ENABLED = '/etc/nginx/sites-enabled/tokyo.conf';
 
     public function __construct(
@@ -46,7 +48,7 @@ class Nginx implements Service
 
     private function installConfiguration(): void
     {
-        $config = $this->fs->get(__DIR__ . '/../../stubs/nginx.conf');
+        $config = $this->fs->get(__DIR__.'/../../stubs/nginx.conf');
 
         $this->fs->backup(self::NGINX_CONF);
 
@@ -54,12 +56,12 @@ class Nginx implements Service
             'TOKYO_USER',
             'TOKYO_GROUP',
             'TOKYO_PID',
-            'TOKYO_ROOT'
+            'TOKYO_ROOT',
         ], [
             user(),
             group(),
             'pid /run/nginx.pid',
-            TOKYO_ROOT
+            TOKYO_ROOT,
         ], $config));
 
         $this->fs->put(self::NGINX_CONF, $newConfig);
@@ -76,7 +78,7 @@ class Nginx implements Service
             str_replace(
                 ['TOKYO_ROOT', 'TOKYO_SERVER', 'TOKYO_STATIC_PREFIX', 'TOKYO_PORT'],
                 [TOKYO_ROOT, TOKYO_SERVER, '123', $this->conf->read('port')],
-                $this->fs->get(__DIR__ . '/../../stubs/tokyo.conf')
+                $this->fs->get(__DIR__.'/../../stubs/tokyo.conf')
             )
         );
 

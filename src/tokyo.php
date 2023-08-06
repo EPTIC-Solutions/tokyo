@@ -14,7 +14,7 @@ $app = new Application(config('app.name'), config('app.version'));
 
 resolve(Tokyo::class)->setup();
 
-if (!isInstalled()) {
+if (! isInstalled()) {
     $app->command('install', function (CommandLine $cli, Configuration $conf, PackageManager $pm, ServiceManager $sm) {
         $cli->ensureSudo();
 
@@ -34,7 +34,7 @@ if (!isInstalled()) {
 } else {
     $app->command('uninstall', function (CommandLine $cli, Configuration $conf, PackageManager $pm, ServiceManager $sm) {
         $answer = ask('Are you sure you want to uninstall Tokyo? (yes/no)', 'no');
-        if (!str_starts_with(strtolower($answer), 'y')) {
+        if (! str_starts_with(strtolower($answer), 'y')) {
             return;
         }
 
@@ -57,13 +57,15 @@ $app->command('sudo-cmds', function () {
         'uninstall',
     ];
 
-    writer()->write(implode(" ", $sudoCommands));
+    writer()->write(implode(' ', $sudoCommands));
 })->setHidden(true);
 
-$app->command('tinker', function () {
-    $shell = new Shell();
+if (isDebug()) {
+    $app->command('tinker', function () {
+        $shell = new Shell();
 
-    $shell->run();
-});
+        $shell->run();
+    })->setDescription('Interact with the Tokyo application.');
+}
 
 return $app;

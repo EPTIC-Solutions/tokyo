@@ -8,7 +8,7 @@ use Tokyo\Contracts\ServiceManager;
 
 class Tokyo
 {
-    static public Container $container;
+    public static Container $container;
 
     public function __construct(private readonly System $system)
     {
@@ -18,7 +18,7 @@ class Tokyo
     public function setup(): void
     {
         if (false === $this->system->isSupportedOperatingSystem()) {
-            error("Tokyo is not supported on this operating system.");
+            error('Tokyo is not supported on this operating system.');
             exit(1);
         }
 
@@ -72,12 +72,12 @@ class Tokyo
             });
     }
 
-    static public function setContainer(Container $container): void
+    public static function setContainer(Container $container): void
     {
         static::$container = $container;
     }
 
-    static public function getContainer(): Container
+    public static function getContainer(): Container
     {
         return static::$container;
     }

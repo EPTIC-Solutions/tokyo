@@ -13,7 +13,7 @@ class Brew implements PackageManager
     private readonly string $BREW_PREFIX;
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function supportedOperatingSystems(): array
     {
@@ -24,7 +24,7 @@ class Brew implements PackageManager
 
     public function __construct(private readonly CommandLine $cli)
     {
-        if (!resolve('BREW_PREFIX')) {
+        if (! resolve('BREW_PREFIX')) {
             container()->set('BREW_PREFIX', trim($this->cli->runAsUser(['brew', '--prefix'])[0]));
         }
 
@@ -54,7 +54,7 @@ class Brew implements PackageManager
 
     public function ensureInstalled(string $package): void
     {
-        if (!$this->installed($package)) {
+        if (! $this->installed($package)) {
             $this->installOrFail($package);
         }
     }
