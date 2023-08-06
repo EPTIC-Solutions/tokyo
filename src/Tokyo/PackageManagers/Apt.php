@@ -44,7 +44,7 @@ class Apt implements PackageManager
 
     public function ensureInstalled(string $package): void
     {
-        if (! $this->installed($package)) {
+        if (!$this->installed($package)) {
             $this->installOrFail($package);
         }
     }

@@ -13,8 +13,8 @@ use Tokyo\Tokyo;
 /**
  * Constants
  */
-if (! defined('TOKYO_ROOT')) {
-    if (! isTesting()) {
+if (!defined('TOKYO_ROOT')) {
+    if (!isTesting()) {
         define('TOKYO_ROOT', $_SERVER['HOME'] . '/.config/eptic/tokyo');
     } else {
         // Handle test cases
@@ -40,7 +40,7 @@ function config($key, $default = null)
     $config = resolve('config');
 
     foreach ($explode as $key) {
-        if (! isset($config[$key])) {
+        if (!isset($config[$key])) {
             return $default;
         }
 
@@ -64,8 +64,8 @@ function writer(OutputInterface $writer = null): OutputInterface
 {
     $container = container();
 
-    if (! $writer) {
-        if (! $container->has('writer')) {
+    if (!$writer) {
+        if (!$container->has('writer')) {
             $container->set('writer', new ConsoleOutput());
         }
 
@@ -81,8 +81,8 @@ function reader(InputInterface $reader = null): InputInterface
 {
     $container = container();
 
-    if (! $reader) {
-        if (! $container->has('reader')) {
+    if (!$reader) {
+        if (!$container->has('reader')) {
             $container->set('reader', new ArgvInput());
         }
 
@@ -186,7 +186,7 @@ function resolve(string $class, array $parameters = []): mixed
  */
 function should_be_sudo(): void
 {
-    if (! isset($_SERVER['SUDO_USER'])) {
+    if (!isset($_SERVER['SUDO_USER'])) {
         error('This command must be run as sudo.');
 
         exit(1);

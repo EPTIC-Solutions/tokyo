@@ -67,20 +67,20 @@ class Filesystem
         $files = is_array($files) ? $files : func_get_args();
 
         foreach ($files as $file) {
-            if (! file_exists($file) && ! is_link($file)) {
+            if (!file_exists($file) && !is_link($file)) {
                 continue;
             }
 
             if ($this->isDir($file)) {
                 $this->rm(iterator_to_array(new \FilesystemIterator($file)));
 
-                if (! @rmdir($file)) {
+                if (!@rmdir($file)) {
                     error("Could not delete directory: $file");
 
                     exit(1);
                 }
             } else {
-                if (! @unlink($file)) {
+                if (!@unlink($file)) {
                     error("Could not delete file: $file");
 
                     exit(1);
@@ -112,7 +112,7 @@ class Filesystem
 
     public function get(string $path): string
     {
-        if (! $this->exists($path)) {
+        if (!$this->exists($path)) {
             error("File does not exist: $path");
 
             exit(1);
@@ -126,7 +126,7 @@ class Filesystem
      */
     public function ensureDirExists(string $path, string $owner = null, int $mode = 0755): void
     {
-        if (! $this->isDir($path)) {
+        if (!$this->isDir($path)) {
             $this->mkdir($path, $owner, $mode);
         }
     }
@@ -149,7 +149,7 @@ class Filesystem
     {
         $to = $file . '.bak';
 
-        if (! $this->exists($to)) {
+        if (!$this->exists($to)) {
             if ($this->exists($file)) {
                 [, $errorCode] = $this->cli->run(['sudo', 'mv', $file, $to]);
 

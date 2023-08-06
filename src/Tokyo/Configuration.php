@@ -24,7 +24,7 @@ class Configuration
 
     public function writeConfiguration()
     {
-        if (! $this->fs->exists($this->path)) {
+        if (!$this->fs->exists($this->path)) {
             $this->fs->putAsUser($this->path, $this->fs->get(__DIR__ . '/../stubs/config.json'));
         }
     }
@@ -41,7 +41,7 @@ class Configuration
         $config = json_decode($this->fs->get($this->path), true);
 
         foreach ($explode as $key) {
-            if (! isset($config[$key])) {
+            if (!isset($config[$key])) {
                 return $default;
             }
 

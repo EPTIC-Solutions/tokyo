@@ -66,7 +66,7 @@ class Php implements Service
      */
     public function symlinkPrimarySock($phpVersion = null)
     {
-        if (! $phpVersion) {
+        if (!$phpVersion) {
             $phpVersion = $this->getPhpVersion();
         }
 
