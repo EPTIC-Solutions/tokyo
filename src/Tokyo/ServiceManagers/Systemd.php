@@ -37,6 +37,14 @@ class Systemd implements ServiceManager
     {
     }
 
+    public function enable(array|string $services): void
+    {
+    }
+
+    public function disable(array|string $services): void
+    {
+    }
+
     public function status(array|string $services): bool
     {
         return true;
