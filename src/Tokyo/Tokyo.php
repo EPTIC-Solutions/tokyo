@@ -59,8 +59,8 @@ class Tokyo
     {
         return collect([
             \Tokyo\ServiceManagers\Brew::class,
-            \Tokyo\ServiceManagers\LinuxService::class,
             \Tokyo\ServiceManagers\Systemd::class,
+            \Tokyo\ServiceManagers\LinuxService::class,
         ])
             ->map(fn (string $sm) => resolve($sm))
             ->filter(fn (ServiceManager $sm) => in_array($this->system->getOperatingSystem(), $sm->supportedOperatingSystems()))
