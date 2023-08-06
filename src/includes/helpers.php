@@ -1,5 +1,7 @@
 <?php
 
+require_once 'constants.php';
+
 use DI\Container;
 use Silly\Application;
 use Symfony\Component\Console\Helper\Table;
@@ -9,19 +11,6 @@ use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Tokyo\Tokyo;
-
-/**
- * Constants
- */
-if (!defined('TOKYO_ROOT')) {
-    if (!isTesting()) {
-        define('TOKYO_ROOT', $_SERVER['HOME'] . '/.config/tokyo');
-    } else {
-        // Handle test cases
-    }
-}
-
-define('TOKYO_SERVER', realpath(__DIR__ . '/../../server/server.php'));
 
 function container(): Container
 {

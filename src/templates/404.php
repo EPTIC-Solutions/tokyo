@@ -386,15 +386,8 @@
             justify-content: center
         }
 
-        .divide-x> :not([hidden])~ :not([hidden]) {
-            --tw-divide-x-reverse: 0;
-            border-right-width: calc(1px * var(--tw-divide-x-reverse));
-            border-left-width: calc(1px * calc(1 - var(--tw-divide-x-reverse)))
-        }
-
-        .divide-black> :not([hidden])~ :not([hidden]) {
-            --tw-divide-opacity: 1;
-            border-color: rgb(0 0 0 / var(--tw-divide-opacity))
+        .gap-2 {
+            gap: 0.5rem
         }
 
         .rounded {
@@ -409,11 +402,6 @@
         .bg-white {
             --tw-bg-opacity: 1;
             background-color: rgb(255 255 255 / var(--tw-bg-opacity))
-        }
-
-        .px-4 {
-            padding-left: 1rem;
-            padding-right: 1rem
         }
 
         .px-6 {
@@ -435,6 +423,11 @@
             line-height: 2.25rem
         }
 
+        .text-7xl {
+            font-size: 4.5rem;
+            line-height: 1
+        }
+
         .font-bold {
             font-weight: 700
         }
@@ -442,11 +435,6 @@
         .text-\[\#fe2c1e\] {
             --tw-text-opacity: 1;
             color: rgb(254 44 30 / var(--tw-text-opacity))
-        }
-
-        .text-blue-500 {
-            --tw-text-opacity: 1;
-            color: rgb(59 130 246 / var(--tw-text-opacity))
         }
 
         .antialiased {
@@ -477,39 +465,21 @@
 </head>
 
 <body class="flex min-h-screen flex-col bg-white font-sans antialiased">
-    <?php if ($_REQUEST['q'] && 'info-show' === $_REQUEST['q']) { ?>
-        <?php phpinfo(); ?>
-    <?php } else { ?>
-        <div class="bg-black font-bold">
-            <div class="flex items-center justify-center px-6 py-3 sm:py-2">
-                <a href="https://tokyo.eptic.ro/" class="text-[#fe2c1e] inline-flex items-center rounded transition hover:text-white">
-                    <span class="text-3xl">TOKYO</span>
-                </a>
+    <div class="bg-black font-bold">
+        <div class="flex items-center justify-center px-6 py-3 sm:py-2">
+            <a href="https://tokyo.eptic.ro/" class="text-[#fe2c1e] inline-flex items-center rounded transition hover:text-white">
+                <span class="text-3xl">TOKYO</span>
+            </a>
+        </div>
+    </div>
+    <section class="flex h-[calc(100vh-52px)] flex-1 items-center justify-center">
+        <div class="mx-auto flex flex-col items-center justify-center gap-2">
+            <div class="text-7xl">404</div>
+            <div>
+                This site doesn't appear to be linked to Tokyo.
             </div>
         </div>
-        <section class="flex h-[calc(100vh-52px)] flex-1 items-center justify-center">
-            <?php if ($_REQUEST['q'] && 'info' === $_REQUEST['q']) { ?>
-                <iframe src="/?q=info-show" class="w-screen h-[inherit]"></iframe>
-            <?php } else { ?>
-                <div class="mx-auto flex items-center justify-center divide-x divide-black">
-                    <div class="px-4">
-                        <?php echo $_SERVER['SERVER_SOFTWARE']; ?>
-                    </div>
-                    <div class="px-4">
-                        PHP <?php echo PHP_VERSION; ?>
-                        <span>
-                            <a title="phpinfo()" class="text-blue-500" href="/?q=info">phpinfo()</a>
-                        </span>
-                    </div>
-                    <div class="px-4">
-                        <a title="Getting Started" class="text-blue-500" href="https://tokyo.eptic.ro/docs">Getting Started</a>
-                    </div>
-                </div>
-            <?php } ?>
-        </section>
-    <?php } ?>
-
-
+    </section>
 </body>
 
 </html>

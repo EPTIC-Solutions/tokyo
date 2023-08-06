@@ -4,9 +4,9 @@ use Psy\Shell;
 use Silly\Application;
 use Tokyo\CommandLine;
 use Tokyo\Configuration;
+use Tokyo\Services\DnsMasq;
 use Tokyo\Services\Nginx;
 use Tokyo\Services\Php;
-use Tokyo\Services\DnsMasq;
 use Tokyo\Site;
 use Tokyo\Tokyo;
 
@@ -63,6 +63,12 @@ if (isInstalled()) {
         info("The [{$path}] is no longer parked for Tokyo");
     })->setDescription('Register the current working (or specified) directory to Tokyo');
 
+    $app->command('parked', function (Site $site) {
+        $parked = $site->parked();
+
+        table(['Site', 'Secured', 'URL', 'Path', 'PHP Version'], $parked->all());
+    })->setDescription('Unlink the current working directory form Tokyo');
+
     $app->command('link [name]', function (?string $name, Site $site) {
         $name = $name ?? basename(getcwd());
         $site->link(getcwd(), $name);
@@ -77,12 +83,6 @@ if (isInstalled()) {
         info('Site [' . $name . '] has been unlinked from Tokyo');
     })->setDescription('Unlink the current working directory form Tokyo');
 
-    $app->command('parked', function (Site $site) {
-        $parked = $site->parked();
-
-        table(['Site', 'Secured', 'URL', 'Path', 'PHP Version'], $parked->all());
-    })->setDescription('Unlink the current working directory form Tokyo');
-
     $app->command('linked', function (Site $site) {
         $linked = $site->linked();
 
@@ -94,7 +94,7 @@ $app->command('sudo-cmds', function () {
     $sudoCommands = [
         'install',
         'uninstall',
-        'reinstall'
+        'reinstall',
     ];
 
     writer()->write(implode(' ', $sudoCommands));
