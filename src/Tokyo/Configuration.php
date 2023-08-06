@@ -50,4 +50,37 @@ class Configuration
 
         return $config;
     }
+
+    public function write(string $key, mixed $value)
+    {
+        $config = json_decode($this->fs->get($this->path), true);
+
+        $explode = explode('.', $key);
+
+        foreach ($explode as $index => $k) {
+            if (!isset($config[$k])) {
+                continue;
+            }
+
+            if ($index === count($explode) - 1) {
+                $config[$k] = $value;
+            }
+        }
+
+        $this->fs->putAsUser($this->path, json_encode($config, JSON_PRETTY_PRINT));
+    }
+
+    public function prependPath(string $path)
+    {
+        $paths = $this->read('paths');
+
+        if (!in_array($path, $paths)) {
+            $paths = [
+                $path,
+                ...$paths,
+            ];
+        }
+
+        $this->write('paths', $paths);
+    }
 }

@@ -9,6 +9,7 @@ use Tokyo\Contracts\ServiceManager;
 use Tokyo\Services\Nginx;
 use Tokyo\Services\Php;
 use Tokyo\Services\DnsMasq;
+use Tokyo\Site;
 use Tokyo\Tokyo;
 
 $app = new Application(config('app.name'), config('app.version'));
@@ -50,16 +51,33 @@ if (!isInstalled()) {
         output("\nTokyo has been removed");
     });
 
-    $app->command('reinstall service', function (string $service) {
-        $cli = resolve(CommandLine::class);
-        $cli->ensureSudo();
+    $app->command('park [path]', function (?string $path, Site $site) {
+        $path = $path ?? getcwd();
+        $site->park($path);
 
-        output("Reinstalling {$service}...\n");
+        info("The [{$path}] directory is now parked for Tokyo");
+    })->setDescription('Register the current working (or specified) directory to Tokyo');
 
-        resolve(DnsMasq::class)->install();
+    $app->command('unpark [path]', function (?string $path, Site $site) {
+        $path = $path ?? getcwd();
+        $site->unpark($path);
 
-        output("\n{$service} has been reinstalled");
-    })->setDescription('Reinstall a service');
+        info("The [{$path}] is no longer parked for Tokyo");
+    })->setDescription('Register the current working (or specified) directory to Tokyo');
+
+    $app->command('link [name]', function (?string $name, Site $site) {
+        $name = $name ?? basename(getcwd());
+        $site->link(getcwd(), $name);
+
+        info('Site [' . $name . '] has been linked to Tokyo');
+    })->setDescription('Link the current working directory to Tokyo');
+
+    $app->command('unlink [name]', function (?string $name, Site $site) {
+        $name = $name ?? basename(getcwd());
+        $site->unlink($name);
+
+        info('Site [' . $name . '] has been unlinked from Tokyo');
+    })->setDescription('Unlink the current working directory form Tokyo');
 }
 
 $app->command('sudo-cmds', function () {

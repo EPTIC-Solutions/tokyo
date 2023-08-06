@@ -71,7 +71,13 @@ class Filesystem
                 continue;
             }
 
-            if ($this->isDir($file)) {
+            if (is_link($file)) {
+                if (!@unlink($file)) {
+                    error("Could not delete symlink: $file");
+
+                    exit(1);
+                }
+            } elseif ($this->isDir($file)) {
                 $this->rm(iterator_to_array(new \FilesystemIterator($file)));
 
                 if (!@rmdir($file)) {
