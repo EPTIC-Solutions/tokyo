@@ -8,7 +8,7 @@
     "packages": [
         {
             "name": "illuminate/collections",
-            "version": "v10.17.1",
+            "version": "v10.18.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/collections.git",
@@ -63,7 +63,7 @@
         },
         {
             "name": "illuminate/conditionable",
-            "version": "v10.17.1",
+            "version": "v10.18.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/conditionable.git",
@@ -109,7 +109,7 @@
         },
         {
             "name": "illuminate/contracts",
-            "version": "v10.17.1",
+            "version": "v10.18.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/contracts.git",
@@ -157,7 +157,7 @@
         },
         {
             "name": "illuminate/macroable",
-            "version": "v10.17.1",
+            "version": "v10.18.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/macroable.git",
@@ -434,16 +434,16 @@
         },
         {
             "name": "php-di/php-di",
-            "version": "7.0.3",
+            "version": "7.0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHP-DI/PHP-DI.git",
-                "reference": "d5dad2500f409d8b78371823c8b382fe9b5d0917"
+                "reference": "8ed79468dfb163824bbf48de5e35d1729f9313b6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHP-DI/PHP-DI/zipball/d5dad2500f409d8b78371823c8b382fe9b5d0917",
-                "reference": "d5dad2500f409d8b78371823c8b382fe9b5d0917",
+                "url": "https://api.github.com/repos/PHP-DI/PHP-DI/zipball/8ed79468dfb163824bbf48de5e35d1729f9313b6",
+                "reference": "8ed79468dfb163824bbf48de5e35d1729f9313b6",
                 "shasum": ""
             },
             "require": {
@@ -491,7 +491,7 @@
             ],
             "support": {
                 "issues": "https://github.com/PHP-DI/PHP-DI/issues",
-                "source": "https://github.com/PHP-DI/PHP-DI/tree/7.0.3"
+                "source": "https://github.com/PHP-DI/PHP-DI/tree/7.0.4"
             },
             "funding": [
                 {
@@ -503,7 +503,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-06-17T10:21:14+00:00"
+            "time": "2023-08-08T15:59:16+00:00"
         },
         {
             "name": "psr/container",
@@ -1695,16 +1695,16 @@
     "packages-dev": [
         {
             "name": "laravel/pint",
-            "version": "v1.10.5",
+            "version": "v1.10.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/pint.git",
-                "reference": "a458fb057bfa2f5a09888a8aa349610be807b0c3"
+                "reference": "d1915b6ecc6406c00472c6b9ae75b46aa153bbb2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/pint/zipball/a458fb057bfa2f5a09888a8aa349610be807b0c3",
-                "reference": "a458fb057bfa2f5a09888a8aa349610be807b0c3",
+                "url": "https://api.github.com/repos/laravel/pint/zipball/d1915b6ecc6406c00472c6b9ae75b46aa153bbb2",
+                "reference": "d1915b6ecc6406c00472c6b9ae75b46aa153bbb2",
                 "shasum": ""
             },
             "require": {
@@ -1757,7 +1757,7 @@
                 "issues": "https://github.com/laravel/pint/issues",
                 "source": "https://github.com/laravel/pint"
             },
-            "time": "2023-07-14T10:26:01+00:00"
+            "time": "2023-08-08T15:17:16+00:00"
         }
     ],
     "aliases": [],
