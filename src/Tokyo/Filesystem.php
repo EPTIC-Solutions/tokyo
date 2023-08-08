@@ -2,6 +2,8 @@
 
 namespace Tokyo;
 
+use FilesystemIterator;
+
 class Filesystem
 {
     public function __construct(private readonly CommandLine $cli)
@@ -31,12 +33,8 @@ class Filesystem
 
     /**
      * Create a symlink to the given target.
-     *
-     * @param  string  $target
-     * @param  string  $link
-     * @return void
      */
-    public function symlink($target, $link)
+    public function symlink(string $target, string $link): void
     {
         if ($this->exists($link)) {
             $this->rm($link);
@@ -49,12 +47,8 @@ class Filesystem
      * Create a symlink to the given target for the non-root user.
      *
      * This uses the command line as PHP can't change symlink permissions.
-     *
-     * @param  string  $target
-     * @param  string  $link
-     * @return void
      */
-    public function symlinkAsUser($target, $link)
+    public function symlinkAsUser(string $target, string $link): void
     {
         if (is_link($link)) {
             $this->rm($link);
@@ -79,7 +73,7 @@ class Filesystem
                     exit(1);
                 }
             } elseif ($this->isDir($file)) {
-                $this->rm(iterator_to_array(new \FilesystemIterator($file)));
+                $this->rm(iterator_to_array(new FilesystemIterator($file)));
 
                 if (!@rmdir($file)) {
                     error("Could not delete directory: $file");
@@ -148,11 +142,8 @@ class Filesystem
 
     /**
      * Backup the given file.
-     *
-     * @param  string  $file
-     * @return bool
      */
-    public function backup($file)
+    public function backup(string $file): bool
     {
         $to = $file . '.bak';
 
@@ -169,11 +160,8 @@ class Filesystem
 
     /**
      * Restore a backed up file.
-     *
-     * @param  string  $file
-     * @return bool
      */
-    public function restore($file)
+    public function restore(string $file): bool
     {
         $from = $file . '.bak';
 
@@ -192,25 +180,19 @@ class Filesystem
     public function scandir(string $path): array
     {
         return collect(scandir($path))
-            ->reject(function ($file) {
-                return in_array($file, ['.', '..']);
-            })
+            ->reject(fn ($file) => in_array($file, ['.', '..']))
             ->values()
             ->all();
     }
 
     /**
-     * Remove all of the broken symbolic links at the given path.
+     * Remove all the broken symbolic links at the given path.
      */
     public function removeBrokenLinksAt(string $path): void
     {
         collect($this->scandir($path))
-            ->filter(function ($file) use ($path) {
-                return $this->isBrokenLink($path . '/' . $file);
-            })
-            ->each(function ($file) use ($path) {
-                $this->rm($path . '/' . $file);
-            });
+            ->filter(fn ($file) => $this->isBrokenLink($path . '/' . $file))
+            ->each(fn ($file) => $this->rm($path . '/' . $file));
     }
 
     /**

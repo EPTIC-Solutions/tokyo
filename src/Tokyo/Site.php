@@ -72,9 +72,7 @@ final class Site
             }
 
             // Only merge on the parked sites that don't interfere with the linked sites
-            $sites = $this->getSites($path)->filter(function ($_, $key) use ($links) {
-                return !$links->has($key);
-            });
+            $sites = $this->getSites($path)->filter(fn ($_, $key) => !$links->has($key));
 
             $parkedLinks = $parkedLinks->merge($sites);
         }
@@ -107,9 +105,8 @@ final class Site
                 }
 
                 return [$site => $realPath];
-            })->filter(function ($path) {
-                return $this->fs->isDir($path);
-            })->map(function ($path, $site) use ($domain) {
+            })->filter(fn ($path) => $this->fs->isDir($path))
+            ->map(function ($path, $site) use ($domain) {
                 $url = 'http://' . $site . '.' . $domain;
                 $phpVersion = $this->php->getPhpVersion();
 

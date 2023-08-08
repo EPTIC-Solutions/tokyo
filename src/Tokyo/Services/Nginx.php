@@ -38,8 +38,7 @@ class Nginx implements Service
         $serviceName = $this->getServiceName();
         $this->pm->ensureInstalled($serviceName);
 
-        if ($this->pm instanceof Brew) {
-        } else {
+        if (!$this->pm instanceof Brew) {
             $this->fs->ensureDirExists('/etc/nginx/sites-available');
             $this->fs->ensureDirExists('/etc/nginx/sites-enabled');
         }
@@ -72,7 +71,7 @@ class Nginx implements Service
         $this->fs->put(self::NGINX_CONF, $newConfig);
     }
 
-    private function installTokyoConfiguration()
+    private function installTokyoConfiguration(): void
     {
         if ($this->fs->exists('/etc/nginx/sites-enabled/default')) {
             $this->fs->rm('/etc/nginx/sites-enabled/default');

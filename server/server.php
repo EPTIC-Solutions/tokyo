@@ -7,7 +7,7 @@ use Tokyo\Server;
 
 $config = json_decode(file_get_contents(TOKYO_ROOT . '/config.json'), true);
 
-function show404()
+function show404(): never
 {
     http_response_code(404);
     include __DIR__ . '/../src/templates/404.php';
@@ -37,12 +37,13 @@ $sitePath = realpath($sitePath);
 $isPhpFile = in_array(pathinfo($uri, PATHINFO_EXTENSION), ['php', 'html', 'phtml']);
 
 if ($uri !== '/' && !$isPhpFile && pathinfo($uri, PATHINFO_EXTENSION) !== '') {
-    if ($staticFilePath = $server->isStaticFile($sitePath, $siteName, $uri)) {
-        return $server->serveStaticFile($staticFilePath, $sitePath, $siteName, $uri);
+    if ($staticFilePath = $server->isStaticFile($sitePath, $uri)) {
+        $server->serveStaticFile($staticFilePath);
+        exit(0);
     }
 }
 
-$path = $server->frontControllerPath($sitePath, $siteName, $uri);
+$path = $server->frontControllerPath($sitePath, $uri);
 
 if (!file_exists($path)) {
     show404();

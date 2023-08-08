@@ -3,13 +3,14 @@
 namespace Tokyo\Contracts;
 
 use Illuminate\Support\Collection;
+use Tokyo\Enums\OperatingSystem;
 
 interface ServiceManager
 {
     /**
      * The supported operating systems.
      *
-     * @var array<int, \Tokyo\OperatingSystem>
+     * @return array<int, OperatingSystem>
      */
     public function supportedOperatingSystems(): array;
 

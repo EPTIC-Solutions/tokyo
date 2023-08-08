@@ -48,7 +48,7 @@ class DnsMasq implements Service
         $this->sm->start($serviceName);
     }
 
-    public function configureDomain(string $domain = null)
+    public function configureDomain(string $domain = null): void
     {
         $domain = $domain ?? $this->conf->read('domain');
 

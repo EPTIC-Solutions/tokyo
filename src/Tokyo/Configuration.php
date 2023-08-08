@@ -11,7 +11,7 @@ class Configuration
         //
     }
 
-    public function install()
+    public function install(): void
     {
         // Create configuration directory
         $this->fs->ensureDirExists(TOKYO_ROOT, user());
@@ -23,14 +23,14 @@ class Configuration
         $this->writeConfiguration();
     }
 
-    public function writeConfiguration()
+    public function writeConfiguration(): void
     {
         if (!$this->fs->exists($this->path)) {
             $this->fs->putAsUser($this->path, $this->fs->get(__DIR__ . '/../stubs/config.json'));
         }
     }
 
-    public function uninstall()
+    public function uninstall(): void
     {
         $this->fs->rm(TOKYO_ROOT);
     }
@@ -52,7 +52,7 @@ class Configuration
         return $config;
     }
 
-    public function write(string $key, mixed $value)
+    public function write(string $key, mixed $value): void
     {
         $config = json_decode($this->fs->get($this->path), true);
 
@@ -71,7 +71,7 @@ class Configuration
         $this->fs->putAsUser($this->path, json_encode($config, JSON_PRETTY_PRINT));
     }
 
-    public function prependPath(string $path)
+    public function prependPath(string $path): void
     {
         $paths = $this->read('paths');
 
@@ -85,7 +85,7 @@ class Configuration
         $this->write('paths', $paths);
     }
 
-    public function prune()
+    public function prune(): void
     {
         if (!$this->fs->exists($this->path)) {
             return;

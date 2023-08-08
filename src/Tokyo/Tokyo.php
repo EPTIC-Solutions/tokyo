@@ -5,6 +5,11 @@ namespace Tokyo;
 use DI\Container;
 use Tokyo\Contracts\PackageManager;
 use Tokyo\Contracts\ServiceManager;
+use Tokyo\PackageManagers\Apt;
+use Tokyo\PackageManagers\Brew as BrewPM;
+use Tokyo\ServiceManagers\Brew as BrewSM;
+use Tokyo\ServiceManagers\LinuxService;
+use Tokyo\ServiceManagers\Systemd;
 
 class Tokyo
 {
@@ -28,7 +33,7 @@ class Tokyo
         $this->onEveryRun();
     }
 
-    private function onEveryRun()
+    private function onEveryRun(): void
     {
         resolve(Configuration::class)->prune();
         resolve(Site::class)->pruneLinks();
@@ -46,8 +51,8 @@ class Tokyo
     private function getAvailablePackageManager(): PackageManager
     {
         return collect([
-            \Tokyo\PackageManagers\Brew::class,
-            \Tokyo\PackageManagers\Apt::class,
+            BrewPM::class,
+            Apt::class,
         ])
             ->map(fn (string $pm) => resolve($pm))
             ->filter(fn (PackageManager $pm) => in_array($this->system->getOperatingSystem(), $pm->supportedOperatingSystems()))
@@ -67,18 +72,19 @@ class Tokyo
     private function getAvailableServiceManager(): ServiceManager
     {
         return collect([
-            \Tokyo\ServiceManagers\Brew::class,
-            \Tokyo\ServiceManagers\Systemd::class,
-            \Tokyo\ServiceManagers\LinuxService::class,
+            BrewSM::class,
+            Systemd::class,
+            LinuxService::class,
         ])
             ->map(fn (string $sm) => resolve($sm))
             ->filter(fn (ServiceManager $sm) => in_array($this->system->getOperatingSystem(), $sm->supportedOperatingSystems()))
-            ->first(static function (ServiceManager $sm) {
-                return $sm->isAvailable();
-            }, static function () {
-                error('Could not find compatible service manager.');
-                exit(1);
-            });
+            ->first(
+                fn (ServiceManager $sm) => $sm->isAvailable(),
+                function () {
+                    error('Could not find compatible service manager.');
+                    exit(1);
+                }
+            );
     }
 
     public static function setContainer(Container $container): void

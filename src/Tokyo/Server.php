@@ -4,7 +4,7 @@ namespace Tokyo;
 
 final class Server
 {
-    public function __construct(private array $config)
+    public function __construct(private readonly array $config)
     {
         //
     }
@@ -26,7 +26,7 @@ final class Server
     {
         $siteName = basename($httpHost, '.' . $this->config['domain']);
 
-        if (strpos($siteName, 'www.') === 0) {
+        if (str_starts_with($siteName, 'www.')) {
             $siteName = substr($siteName, 4);
         }
 
@@ -91,7 +91,7 @@ final class Server
     /**
      * Determine if the incoming request is for a static file.
      */
-    public function isStaticFile(string $sitePath, string $siteName, string $uri)/*: string|false */
+    public function isStaticFile(string $sitePath, string $uri): string|false
     {
         $candidates = [
             $sitePath . '/dist/index.html',
@@ -100,8 +100,6 @@ final class Server
             $sitePath . '/index.php',
             $sitePath . '/index.html',
         ];
-
-        $candidate = null;
 
         foreach ($candidates as $candidate) {
             if ($this->isActualFile($candidate)) {
@@ -124,14 +122,14 @@ final class Server
     /**
      * Serve the static file at the given path.
      */
-    public function serveStaticFile(string $staticFilePath, string $sitePath, string $siteName, string $uri): void
+    public function serveStaticFile(string $staticFilePath): void
     {
         /**
-         * Back story...
+         * Backstory...
          *
          * PHP docs *claim* you can set default_mimetype = "" to disable the default
          * Content-Type header. This works in PHP 7+, but in PHP 5.* it sends an
-         * *empty* Content-Type header, which is significantly different than
+         * *empty* Content-Type header, which is significantly different from
          * sending *no* Content-Type header.
          *
          * However, if you explicitly set a Content-Type header, then explicitly
@@ -176,7 +174,7 @@ final class Server
     /**
      * Get the fully resolved path to the application's front controller.
      */
-    public function frontControllerPath(string $sitePath, string $siteName, string $uri): ?string
+    public function frontControllerPath(string $sitePath, string $uri): ?string
     {
         $uri = rtrim($uri, '/');
 

@@ -3,8 +3,6 @@
 namespace Tokyo\Services;
 
 use DomainException;
-use Tokyo\CommandLine;
-use Tokyo\Configuration;
 use Tokyo\Contracts\PackageManager;
 use Tokyo\Contracts\Service;
 use Tokyo\Contracts\ServiceManager;
@@ -13,8 +11,6 @@ use Tokyo\Filesystem;
 class Php implements Service
 {
     public function __construct(
-        private readonly Configuration $conf,
-        private readonly CommandLine $cli,
         private readonly Filesystem $fs,
         private readonly ServiceManager $sm,
         private readonly PackageManager $pm,
@@ -46,7 +42,7 @@ class Php implements Service
         $this->sm->restart($serviceName);
     }
 
-    private function installConfiguration()
+    private function installConfiguration(): void
     {
         $contents = $this->fs->get(__DIR__ . '/../../stubs/tokyo-fpm.conf');
         $phpVersion = $this->getPhpVersion();
@@ -67,11 +63,8 @@ class Php implements Service
 
     /**
      * Symlink the given php version's fpm socket file to be the primary tokyo.sock for nginx.
-     *
-     * @param  string  $phpVersion
-     * @return void
      */
-    public function symlinkPrimarySock($phpVersion = null)
+    public function symlinkPrimarySock(string $phpVersion = null): void
     {
         if (!$phpVersion) {
             $phpVersion = $this->getPhpVersion();
@@ -82,14 +75,12 @@ class Php implements Service
 
     /**
      * Get the path to the FPM configuration file for the current PHP version.
-     *
-     * @return string
      */
-    public function fpmConfigPath($phpVersion = null)
+    public function fpmConfigPath(string $phpVersion = null): string
     {
         $phpVersion = $phpVersion ?: $this->getPhpVersion();
 
-        $path = collect([
+        return collect([
             '/etc/php/' . $phpVersion . '/fpm/pool.d', // Ubuntu
             '/etc/php' . $phpVersion . '/fpm/pool.d', // Ubuntu
             '/etc/php' . $phpVersion . '/php-fpm.d', // Manjaro
@@ -97,13 +88,13 @@ class Php implements Service
             '/etc/php/php-fpm.d', // Arch
             '/etc/php7/fpm/php-fpm.d', // openSUSE PHP7
             '/etc/php8/fpm/php-fpm.d', // openSUSE PHP8
-        ])->first(function ($path) {
-            return is_dir($path);
-        }, function () {
-            throw new DomainException('Unable to determine PHP-FPM configuration folder.');
-        });
-
-        return $path;
+        ])->first(
+            fn ($path) => is_dir($path),
+            function () {
+                error('Unable to determine PHP-FPM configuration folder.');
+                exit(1);
+            }
+        );
     }
 
     private function getSockName($version): string

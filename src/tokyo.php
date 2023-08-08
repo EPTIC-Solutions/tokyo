@@ -53,14 +53,14 @@ if (isInstalled()) {
         $path = $path ?? getcwd();
         $site->park($path);
 
-        info("The [{$path}] directory is now parked for Tokyo");
+        info("The [$path] directory is now parked for Tokyo");
     })->setDescription('Register the current working (or specified) directory to Tokyo');
 
     $app->command('unpark [path]', function (?string $path, Site $site) {
         $path = $path ?? getcwd();
         $site->unpark($path);
 
-        info("The [{$path}] is no longer parked for Tokyo");
+        info("The [$path] is no longer parked for Tokyo");
     })->setDescription('Register the current working (or specified) directory to Tokyo');
 
     $app->command('parked', function (Site $site) {
@@ -98,7 +98,7 @@ $app->command('sudo-cmds', function () {
     ];
 
     writer()->write(implode(' ', $sudoCommands));
-})->setHidden(true);
+})->setHidden();
 
 if (isDebug()) {
     $app->command('tinker', function () {

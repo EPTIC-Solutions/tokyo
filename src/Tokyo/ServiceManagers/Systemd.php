@@ -6,7 +6,7 @@ use Illuminate\Support\Collection;
 use Symfony\Component\Process\ExecutableFinder;
 use Tokyo\CommandLine;
 use Tokyo\Contracts\ServiceManager;
-use Tokyo\OperatingSystem;
+use Tokyo\Enums\OperatingSystem;
 
 class Systemd implements ServiceManager
 {

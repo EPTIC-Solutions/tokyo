@@ -156,11 +156,20 @@ function output(?string $output = ''): void
 
 /**
  * Resolve the given class from the container.
+ *
+ * @template T
+ *
+ * @return mixed|T
  */
 function resolve(string $class, array $parameters = []): mixed
 {
     if (container()->has($class)) {
-        return container()->get($class);
+        try {
+            return container()->get($class);
+        } catch (\Exception $e) {
+            // This should never return but this fixes complains from PHPStorm
+            return null;
+        }
     }
 
     try {
@@ -170,27 +179,15 @@ function resolve(string $class, array $parameters = []): mixed
     }
 }
 
-/**
- * Verify that the script is currently running as "sudo".
- */
-function should_be_sudo(): void
-{
-    if (!isset($_SERVER['SUDO_USER'])) {
-        error('This command must be run as sudo.');
-
-        exit(1);
-    }
-}
-
 function isInstalled(): bool
 {
     return is_dir(TOKYO_ROOT);
 }
 
-function isTesting(): bool
-{
-    return false !== strpos($_SERVER['SCRIPT_NAME'], 'phpunit');
-}
+//function isTesting(): bool
+//{
+//    return false !== strpos($_SERVER['SCRIPT_NAME'], 'phpunit');
+//}
 
 function getUID(): int
 {

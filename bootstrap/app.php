@@ -4,6 +4,7 @@ use DI\ContainerBuilder;
 use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\Process\ExecutableFinder;
 use Tokyo\Tokyo;
 
 define('TOKYO_START', microtime(true));
@@ -25,7 +26,7 @@ $containerBuilder->addDefinitions([
         ];
     },
     'eventDispatcher' => fn () => $eventDispatcher,
-    \Symfony\Component\Process\ExecutableFinder::class => new \Symfony\Component\Process\ExecutableFinder(),
+    ExecutableFinder::class => new ExecutableFinder(),
 ]);
 
 $eventDispatcher->addListener(
@@ -40,7 +41,7 @@ $container = $containerBuilder->build();
 
 Tokyo::setContainer($container);
 
-/** @var Silly\Application */
+/** @var Silly\Application $app */
 $app = require __DIR__ . '/../src/tokyo.php';
 
 $container->set('app', $app);

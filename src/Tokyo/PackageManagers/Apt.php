@@ -6,7 +6,7 @@ use Illuminate\Support\Collection;
 use Symfony\Component\Process\ExecutableFinder;
 use Tokyo\CommandLine;
 use Tokyo\Contracts\PackageManager;
-use Tokyo\OperatingSystem;
+use Tokyo\Enums\OperatingSystem;
 
 class Apt implements PackageManager
 {
@@ -30,7 +30,7 @@ class Apt implements PackageManager
         }
 
         return collect(explode("\n", trim($packagesRaw)))
-            ->filter(fn ($package) => strpos($package, 'ii') === 0)
+            ->filter(fn ($package) => str_starts_with($package, 'ii'))
             ->map(function ($package) {
                 $package = explode(' ', preg_replace('/\s+/', ' ', $package));
 
