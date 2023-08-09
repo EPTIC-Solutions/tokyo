@@ -7,7 +7,9 @@ use Tokyo\Configuration;
 use Tokyo\Contracts\PackageManager;
 use Tokyo\Contracts\Service;
 use Tokyo\Contracts\ServiceManager;
+use Tokyo\Enums\OperatingSystem;
 use Tokyo\Filesystem;
+use Tokyo\System;
 
 class DnsMasq implements Service
 {
@@ -19,6 +21,7 @@ class DnsMasq implements Service
         private readonly Filesystem $fs,
         private readonly ServiceManager $sm,
         private readonly PackageManager $pm,
+        private readonly System $system,
     ) {
         //
     }
@@ -41,11 +44,18 @@ class DnsMasq implements Service
 
         $this->configureDomain();
         $this->fs->putAsUser('/etc/dnsmasq.conf', $this->fs->get(__DIR__ . '/../../stubs/dnsmasq.conf'));
+        if($this->system->getOperatingSystem() === OperatingSystem::LINUX) {
+            $this->fs->backup('/etc/resolv.conf');
+        }
 
-        $this->sm->restart('network-manager');
+        if ($this->cli->run(['which', 'network-manager'])[1] === 0) {
+            $this->sm->restart('network-manager');
+        }
 
         $this->sm->enable($serviceName);
         $this->sm->start($serviceName);
+
+        $this->sm->restart($serviceName);
     }
 
     public function configureDomain(string $domain = null): void
@@ -60,6 +70,10 @@ class DnsMasq implements Service
         $serviceName = $this->getServiceName();
         $this->fs->rm($this->configPath);
 
+        if($this->system->getOperatingSystem() === OperatingSystem::LINUX) {
+            $this->fs->restore('/etc/resolv.conf');
+        }
+
         if ($this->pm->installed($serviceName)) {
             $this->sm->disable($serviceName);
             $this->sm->stop($serviceName);
@@ -72,6 +86,8 @@ class DnsMasq implements Service
             $this->cli->run(['systemctl', 'start', 'systemd-resolved']);
         }
 
-        $this->sm->restart('network-manager');
+        if ($this->cli->run(['which', 'network-manager'])[1] === 0) {
+            $this->sm->restart('network-manager');
+        }
     }
 }
