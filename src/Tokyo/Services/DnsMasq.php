@@ -44,13 +44,15 @@ class DnsMasq implements Service
 
         $this->configureDomain();
         $this->fs->putAsUser('/etc/dnsmasq.conf', $this->fs->get(__DIR__ . '/../../stubs/dnsmasq.conf'));
-        if($this->system->getOperatingSystem() === OperatingSystem::LINUX) {
-            $this->fs->backup('/etc/resolv.conf');
+
+        if ($this->system->getOperatingSystem() === OperatingSystem::LINUX) {
+            if ($this->cli->run(['which', 'network-manager'])[1] === 0) {
+                $this->fs->backup('/etc/resolv.conf');
+                $this->fs->putAsUser('/etc/NetworkManager/conf.d/tokyo.conf', $this->fs->get(__DIR__ . '/../../stubs/networkmanager.conf'));
+                $this->sm->restart('network-manager');
+            }
         }
 
-        if ($this->cli->run(['which', 'network-manager'])[1] === 0) {
-            $this->sm->restart('network-manager');
-        }
 
         $this->sm->enable($serviceName);
         $this->sm->start($serviceName);
@@ -70,10 +72,6 @@ class DnsMasq implements Service
         $serviceName = $this->getServiceName();
         $this->fs->rm($this->configPath);
 
-        if($this->system->getOperatingSystem() === OperatingSystem::LINUX) {
-            $this->fs->restore('/etc/resolv.conf');
-        }
-
         if ($this->pm->installed($serviceName)) {
             $this->sm->disable($serviceName);
             $this->sm->stop($serviceName);
@@ -86,8 +84,12 @@ class DnsMasq implements Service
             $this->cli->run(['systemctl', 'start', 'systemd-resolved']);
         }
 
-        if ($this->cli->run(['which', 'network-manager'])[1] === 0) {
-            $this->sm->restart('network-manager');
+        if ($this->system->getOperatingSystem() === OperatingSystem::LINUX) {
+            if ($this->cli->run(['which', 'network-manager'])[1] === 0) {
+                $this->fs->restore('/etc/resolv.conf');
+                $this->fs->rm('/etc/NetworkManager/conf.d/tokyo.conf');
+                $this->sm->restart('network-manager');
+            }
         }
     }
 }
