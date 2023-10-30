@@ -1,4 +1,4 @@
-[![https://github.com/EPTIC-Solutions/tokyo](https://banners.eptic.ro/tokyo)](https://github.com/EPTIC-Solutions/tokyo)
+[![https://github.com/EPTIC-Solutions/tokyo](https://banners.eptic.ro/tokyo?width=900)](https://github.com/EPTIC-Solutions/tokyo)
 
 # Tokyo
 
